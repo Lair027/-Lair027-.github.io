@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Portfolio Website</title>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">Laira</a>
+
+        <nav>
+            <a href="#" class="active">Home</a>
+            <a href="#education">Education</a>
+        </nav>
+    </header>
+    
+    <section class="home">
+        <div class="home-img">
+            <img src="main.jpg" alt="Profile Picture">
+        </div>
+        <div class="home-content">
+            <h1>Hi, It's <span>Laira!</span></h1>
+            <h3 class="typing-text">I'm a <span></span></h3>
+            <p>Honest and teachable. Ready to help the team to achieve company goals.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/lairacoleen.samis" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://github.com/Lair027" target="_blank"><i class="fa-brands fa-github"></i></a>
+                <a href="https://www.instagram.com/arialeen_/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+            
+        </div>
+    </section>
+   
+    <section class="education" id="education">
+        <h2>Education History</h2>
+        <div class="education-container">
+            <div class="education-item">
+                <div class="education-box">
+                    <p>Jun 2016 - Mar 2020<br>Junior High School<br>Escuela San Gabriel de Arcangel Foundation Incorporation</p>
+                </div>
+                <div class="arrow-down"></div>
+            </div>
+            <div class="education-item">
+                <div class="education-box">
+                    <p>Oct 2020 - July 2022<br>TVL-Track Programming<br>Caloocan City Business High School</p>
+                </div>
+                <div class="arrow-down"></div>
+            </div>
+            <div class="education-item">
+                <div class="education-box">
+                    <p>Aug 2022 - Present<br>Bachelor of Science in Computer Science<br>University of Caloocan City</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.querySelector('a[href="#education"]').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default anchor click behavior
+            document.querySelector('#education').scrollIntoView({
+                behavior: 'smooth' // Smooth scroll animation
+            });
+        });
+    </script>
+</body>
+</html>
