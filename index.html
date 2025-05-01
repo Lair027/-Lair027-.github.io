@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="custom-fixes.css">
     <title>Portfolio Website</title>
 </head>
 <body>
@@ -12,58 +13,1252 @@
         <a href="#" class="logo">Laira</a>
 
         <nav>
-            <a href="#" class="active">Home</a>
-            <a href="#education">Education</a>
+            <a href="#home-content" class="nav-link active" data-section="home">Home</a>
+            <a href="#education" class="nav-link" data-section="education">Education</a>
+            <a href="#projects" class="nav-link" data-section="projects">Projects</a>
+            <a href="#certificates" class="nav-link" data-section="certificates">Certificates</a>
         </nav>
     </header>
     
-    <section class="home">
-        <div class="home-img">
-            <img src="main.jpg" alt="Profile Picture">
-        </div>
-        <div class="home-content">
-            <h1>Hi, It's <span>Laira!</span></h1>
-            <h3 class="typing-text">I'm a <span></span></h3>
-            <p>Honest and teachable. Ready to help the team to achieve company goals.</p>
-            <div class="social-icons">
-                <a href="https://www.facebook.com/lairacoleen.samis" target="_blank"><i class="fa-brands fa-facebook"></i></a>
-                <a href="https://github.com/Lair027" target="_blank"><i class="fa-brands fa-github"></i></a>
-                <a href="https://www.instagram.com/arialeen_/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-            </div>
-            
-        </div>
-    </section>
-   
-    <section class="education" id="education">
-        <h2>Education History</h2>
-        <div class="education-container">
-            <div class="education-item">
-                <div class="education-box">
-                    <p>Jun 2016 - Mar 2020<br>Junior High School<br>Escuela San Gabriel de Arcangel Foundation Incorporation</p>
-                </div>
-                <div class="arrow-down"></div>
-            </div>
-            <div class="education-item">
-                <div class="education-box">
-                    <p>Oct 2020 - July 2022<br>TVL-Track Programming<br>Caloocan City Business High School</p>
-                </div>
-                <div class="arrow-down"></div>
-            </div>
-            <div class="education-item">
-                <div class="education-box">
-                    <p>Aug 2022 - Present<br>Bachelor of Science in Computer Science<br>University of Caloocan City</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Include Home Section -->
+    <div id="home-content"></div>
+    
+    <!-- Include Education Section -->
+    <div id="education-content"></div>
+    
+    <!-- Include Projects Section -->
+    <div id="projects-content"></div>
+
+    <!-- Include Certificates Section -->
+    <div id="certificates-content"></div>
+
+    <!-- Fullscreen Image Viewer -->
+    <div class="fullscreen-viewer">
+        <div class="fullscreen-close"><i class="fas fa-times"></i></div>
+        <div class="fullscreen-nav prev"><i class="fas fa-chevron-left"></i></div>
+        <div class="fullscreen-nav next"><i class="fas fa-chevron-right"></i></div>
+        <img src="" alt="" class="fullscreen-image">
+        <div class="fullscreen-counter">1 / 10</div>
+    </div>
 
     <script>
-        document.querySelector('a[href="#education"]').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default anchor click behavior
-            document.querySelector('#education').scrollIntoView({
-                behavior: 'smooth' // Smooth scroll animation
+        // Load components
+        fetch('components/home.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('home-content').innerHTML = data;
+                // Add event listeners after content is loaded
+                setupInstaActions();
+            });
+
+        fetch('components/education.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('education-content').innerHTML = data;
+            });
+            
+        fetch('components/projects.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('projects-content').innerHTML = data;
+                // Set up click events for project links after content is loaded
+                setupProjectLinks();
+                // Set up image gallery after content is loaded
+                setupImageGallery();
+            });
+
+        // Added direct fetch for certificates section
+        fetch('components/certificates.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('certificates-content').innerHTML = data;
+                // Initialize certificate viewer functionality
+                setTimeout(() => {
+                    if (typeof initCertificateViewers === 'function') {
+                        initCertificateViewers();
+                        console.log('Certificate viewer initialization complete');
+                    } else {
+                        console.error('Certificate viewer function not found');
+                    }
+                }, 500);
+            })
+            .catch(error => {
+                console.error('Error loading certificates:', error);
+            });
+
+        // Smooth scroll functionality
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(event) {
+                event.preventDefault();
+                
+                const target = this.getAttribute('href');
+                const dataSection = this.getAttribute('data-section');
+                
+                // Handle home section scrolling
+                if (target === '#home-content' || dataSection === 'home') {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    // For other sections, try to find them by ID
+                    let targetElement;
+                    
+                    // First check if the exact target exists
+                    targetElement = document.querySelector(target);
+                    
+                    // If not found and we have a data-section attribute, try that
+                    if (!targetElement && dataSection) {
+                        targetElement = document.getElementById(dataSection);
+                    }
+                    
+                    // If still not found, check if it's one of our content divs
+                    if (!targetElement && dataSection) {
+                        targetElement = document.getElementById(dataSection + '-content');
+                    }
+                    
+                    if (targetElement) {
+                        const headerOffset = 80; // Account for header height
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        console.warn('Target element not found:', target, dataSection);
+                    }
+                }
+                
+                // Update active state in nav
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
             });
         });
+        
+        // Update active nav link based on scroll position
+        window.addEventListener('scroll', updateActiveNavLink);
+        
+        function updateActiveNavLink() {
+            const sections = {
+                home: document.getElementById('home-content'),
+                education: document.getElementById('education'),
+                projects: document.getElementById('projects'),
+                certificates: document.getElementById('certificates')
+            };
+            
+            const scrollPosition = window.scrollY + 100; // Add offset for better detection
+            
+            // Determine which section is currently in view
+            let currentSection = 'home';
+            
+            // Check certificates, projects, education sections in reverse order (bottom to top)
+            if (sections.certificates && scrollPosition >= sections.certificates.offsetTop - 150) {
+                currentSection = 'certificates';
+            } else if (sections.projects && scrollPosition >= sections.projects.offsetTop - 150) {
+                currentSection = 'projects';
+            } else if (sections.education && scrollPosition >= sections.education.offsetTop - 150) {
+                currentSection = 'education';
+            }
+            
+            // Update active class on nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('data-section') === currentSection) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+        
+        // Setup project links to make entire project clickable
+        function setupProjectLinks() {
+            // Project link click handler for opening modals
+            document.querySelectorAll('.project-link').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const projectId = this.getAttribute('data-project');
+                    if (projectId) {
+                        openProjectModal(projectId);
+                    }
+                });
+            });
+            
+            // Button click handler within project overlays
+            document.querySelectorAll('.project-overlay .btn-small').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const projectItem = this.closest('.project-item');
+                    const projectLink = projectItem.querySelector('.project-link');
+                    const projectId = projectLink.getAttribute('data-project');
+                    if (projectId) {
+                        openProjectModal(projectId);
+                    }
+                });
+            });
+            
+            // Close modal when clicking the X button
+            document.querySelectorAll('.modal-close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', closeAllModals);
+            });
+            
+            // Close modal when clicking outside the modal content
+            document.querySelectorAll('.project-modal').forEach(modal => {
+                modal.addEventListener('click', function(event) {
+                    if (event.target === this) {
+                        closeAllModals();
+                    }
+                });
+            });
+            
+            // Close modal with escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeAllModals();
+                    closeFullscreenViewer();
+                }
+            });
+        }
+        
+        // Open the project modal
+        function openProjectModal(projectId) {
+            closeAllModals(); // Close any open modals first
+            const modal = document.getElementById('modal-' + projectId);
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+                
+                // Animate the modal content in
+                setTimeout(() => {
+                    const modalContent = modal.querySelector('.modal-content');
+                    if (modalContent) {
+                        modalContent.style.transform = 'translateY(0)';
+                        modalContent.style.opacity = '1';
+                    }
+                }, 10);
+            }
+        }
+        
+        // Close all modals
+        function closeAllModals() {
+            document.querySelectorAll('.project-modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+        
+        // Setup Instagram action animations
+        function setupInstaActions() {
+            // Get all Instagram action icons after content is loaded
+            const heartIcon = document.querySelector('.insta-actions .fa-heart');
+            const commentIcon = document.querySelector('.insta-actions .fa-comment');
+            const paperPlaneIcon = document.querySelector('.insta-actions .fa-paper-plane');
+            
+            // Add click events to each icon
+            if (heartIcon) {
+                heartIcon.addEventListener('click', function() {
+                    this.classList.toggle('fa-regular');
+                    this.classList.toggle('fa-solid');
+                    this.classList.add('liked');
+                    // Remove animation class after animation completes
+                    setTimeout(() => {
+                        this.classList.remove('liked');
+                    }, 800);
+                });
+            }
+            
+            if (commentIcon) {
+                commentIcon.addEventListener('click', function() {
+                    this.classList.add('commented');
+                    // Remove animation class after animation completes
+                    setTimeout(() => {
+                        this.classList.remove('commented');
+                    }, 600);
+                });
+            }
+            
+            if (paperPlaneIcon) {
+                paperPlaneIcon.addEventListener('click', function() {
+                    this.classList.add('sent');
+                    // Remove animation class after animation completes
+                    setTimeout(() => {
+                        this.classList.remove('sent');
+                    }, 1500);
+                });
+            }
+        }
+        
+        // Setup fullscreen image gallery
+        function setupImageGallery() {
+            console.log('Setting up image gallery...');
+            
+            // Fullscreen viewer elements
+            const fullscreenViewer = document.querySelector('.fullscreen-viewer');
+            const fullscreenImage = document.querySelector('.fullscreen-image');
+            const fullscreenClose = document.querySelector('.fullscreen-close');
+            const fullscreenPrev = document.querySelector('.fullscreen-nav.prev');
+            const fullscreenNext = document.querySelector('.fullscreen-nav.next');
+            const fullscreenCounter = document.querySelector('.fullscreen-counter');
+            
+            console.log('Fullscreen elements found:', {
+                viewer: !!fullscreenViewer,
+                image: !!fullscreenImage,
+                close: !!fullscreenClose,
+                prev: !!fullscreenPrev,
+                next: !!fullscreenNext,
+                counter: !!fullscreenCounter
+            });
+            
+            let currentGalleryImages = [];
+            let currentImageIndex = 0;
+            
+            // Add click event to all gallery images with direct event handling
+            function setupImageClicks() {
+                const galleryImages = document.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img');
+                
+                console.log('Found gallery images:', galleryImages.length);
+                
+                // Remove existing event listeners first to avoid duplicates
+                galleryImages.forEach(img => {
+                    img.removeEventListener('click', handleImageClick);
+                    img.addEventListener('click', handleImageClick);
+                    img.style.cursor = 'pointer';
+                });
+                
+                console.log('Image click events set up for', galleryImages.length, 'images');
+            }
+            
+            // Image click handler function
+            function handleImageClick(e) {
+                console.log('Image clicked!', e.target.src);
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Find all images in the current gallery
+                const modal = this.closest('.modal-content-wrapper');
+                if (!modal) {
+                    console.error('Could not find parent modal-content-wrapper');
+                    return;
+                }
+                
+                currentGalleryImages = Array.from(modal.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img'));
+                console.log('Gallery images count:', currentGalleryImages.length);
+                
+                // Set the current image index
+                currentImageIndex = currentGalleryImages.indexOf(this);
+                console.log('Current image index:', currentImageIndex);
+                
+                // Open fullscreen viewer with the current image
+                openFullscreenViewer(this.src, currentImageIndex, currentGalleryImages.length);
+            }
+            
+            // Call setup immediately and again after a short delay to ensure all images are loaded
+            setupImageClicks();
+            setTimeout(setupImageClicks, 500);
+            setTimeout(setupImageClicks, 1000);
+            setTimeout(setupImageClicks, 2000);
+            
+            // Directly attach click events to all project modals when they become active
+            document.querySelectorAll('.project-modal').forEach(modal => {
+                modal.addEventListener('transitionend', function(e) {
+                    if (this.classList.contains('active') && e.propertyName === 'opacity') {
+                        console.log('Modal transition ended, setting up click events');
+                        setTimeout(setupImageClicks, 100);
+                    }
+                });
+            });
+            
+            // Close fullscreen viewer
+            if (fullscreenClose) {
+                fullscreenClose.addEventListener('click', function(e) {
+                    console.log('Close button clicked');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeFullscreenViewer();
+                });
+            }
+            
+            // Click outside image to close
+            if (fullscreenViewer) {
+                fullscreenViewer.addEventListener('click', function(event) {
+                    if (event.target === this) {
+                        console.log('Clicked outside, closing viewer');
+                        closeFullscreenViewer();
+                    }
+                });
+            }
+            
+            // Previous image
+            if (fullscreenPrev) {
+                fullscreenPrev.addEventListener('click', function(e) {
+                    console.log('Previous button clicked');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigateGallery('prev');
+                });
+            }
+            
+            // Next image
+            if (fullscreenNext) {
+                fullscreenNext.addEventListener('click', function(e) {
+                    console.log('Next button clicked');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigateGallery('next');
+                });
+            }
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(event) {
+                if (!fullscreenViewer || !fullscreenViewer.classList.contains('active')) return;
+                
+                console.log('Key pressed in fullscreen mode:', event.key);
+                if (event.key === 'ArrowLeft') {
+                    navigateGallery('prev');
+                } else if (event.key === 'ArrowRight') {
+                    navigateGallery('next');
+                } else if (event.key === 'Escape') {
+                    closeFullscreenViewer();
+                }
+            });
+            
+            // Open fullscreen viewer
+            function openFullscreenViewer(src, index, total) {
+                console.log('Opening fullscreen viewer with image:', src);
+                if (!fullscreenViewer || !fullscreenImage) {
+                    console.error('Fullscreen viewer elements not found!');
+                    return;
+                }
+                
+                fullscreenImage.src = src;
+                updateCounter(index, total);
+                fullscreenViewer.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+                console.log('Fullscreen viewer activated');
+            }
+            
+            // Navigate through gallery
+            function navigateGallery(direction) {
+                console.log('Navigating gallery:', direction);
+                if (currentGalleryImages.length === 0) {
+                    console.error('No gallery images found for navigation');
+                    return;
+                }
+                
+                if (direction === 'prev') {
+                    currentImageIndex = (currentImageIndex === 0) ? currentGalleryImages.length - 1 : currentImageIndex - 1;
+                } else {
+                    currentImageIndex = (currentImageIndex === currentGalleryImages.length - 1) ? 0 : currentImageIndex + 1;
+                }
+                
+                console.log('New image index:', currentImageIndex);
+                
+                // Apply a small fade effect during transition
+                if (fullscreenImage) {
+                    fullscreenImage.style.opacity = '0.5';
+                    setTimeout(() => {
+                        fullscreenImage.src = currentGalleryImages[currentImageIndex].src;
+                        updateCounter(currentImageIndex, currentGalleryImages.length);
+                        fullscreenImage.style.opacity = '1';
+                    }, 200);
+                }
+            }
+            
+            // Update counter text
+            function updateCounter(index, total) {
+                if (fullscreenCounter) {
+                    fullscreenCounter.textContent = `${index + 1} / ${total}`;
+                    console.log('Counter updated:', fullscreenCounter.textContent);
+                }
+            }
+        }
+        
+        // Close fullscreen viewer
+        function closeFullscreenViewer() {
+            console.log('Closing fullscreen viewer');
+            const fullscreenViewer = document.querySelector('.fullscreen-viewer');
+            if (fullscreenViewer) {
+                fullscreenViewer.classList.remove('active');
+                document.body.style.overflow = ''; // Restore scrolling
+                console.log('Fullscreen viewer closed');
+            } else {
+                console.error('Fullscreen viewer element not found for closing');
+            }
+        }
+        
+        // Call once on page load to set initial state
+        setTimeout(updateActiveNavLink, 500);
+        
+        // Add direct click handlers to images after a delay
+        function addDirectImageClickHandlers() {
+            console.log('Adding direct image click handlers');
+            document.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img').forEach(img => {
+                img.addEventListener('click', function(e) {
+                    console.log('Direct image click:', this.src);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Access the fullscreen viewer and image directly
+                    const fullscreenViewer = document.querySelector('.fullscreen-viewer');
+                    const fullscreenImage = document.querySelector('.fullscreen-image');
+                    const fullscreenCounter = document.querySelector('.fullscreen-counter');
+                    
+                    if (fullscreenViewer && fullscreenImage) {
+                        // Show the image directly
+                        fullscreenImage.src = this.src;
+                        
+                        // Try to set the counter if available
+                        if (fullscreenCounter) {
+                            const modal = this.closest('.modal-content-wrapper');
+                            if (modal) {
+                                const allImages = Array.from(modal.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img'));
+                                const index = allImages.indexOf(this);
+                                fullscreenCounter.textContent = `${index + 1} / ${allImages.length}`;
+                            }
+                        }
+                        
+                        fullscreenViewer.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                        console.log('Fullscreen viewer activated directly');
+                    } else {
+                        console.error('Fullscreen elements not found in direct handler');
+                    }
+                });
+                img.style.cursor = 'pointer';
+            });
+        }
+        
+        // Add a direct event listener to modal opening
+        document.addEventListener('click', function(event) {
+            const projectLink = event.target.closest('.project-link');
+            const btnSmall = event.target.closest('.btn-small');
+            
+            if (projectLink || btnSmall) {
+                console.log('Project link or button clicked, setting up gallery');
+                // Delay to ensure modal is open and content is rendered
+                setTimeout(() => {
+                    setupImageGallery();
+                    addDirectImageClickHandlers(); // Add direct handlers too
+                }, 500);
+            }
+        });
+        
+        // Initialize the image gallery functionality on page load
+        setTimeout(() => {
+            console.log('Initializing image gallery on page load');
+            setupImageGallery();
+            addDirectImageClickHandlers(); // Add direct handlers too
+        }, 1000);
+        
+        // Initialize certificate viewer when scrolling to that section
+        let certificatesInitialized = false;
+        window.addEventListener('scroll', () => {
+            const certificatesSection = document.getElementById('certificates');
+            if (!certificatesInitialized && certificatesSection) {
+                const sectionTop = certificatesSection.getBoundingClientRect().top;
+                if (sectionTop < window.innerHeight) {
+                    // User has scrolled to certificates section, initialize viewer
+                    if (typeof initCertificateViewers === 'function') {
+                        initCertificateViewers();
+                        certificatesInitialized = true;
+                        console.log('Certificate viewer initialized on scroll');
+                    }
+                }
+            }
+        });
+
+        // Check if fullscreen viewer elements exist, re-create if missing
+        setTimeout(() => {
+            console.log('Checking fullscreen viewer elements');
+            
+            let fullscreenViewer = document.querySelector('.fullscreen-viewer');
+            
+            // If fullscreen viewer doesn't exist, create it
+            if (!fullscreenViewer) {
+                console.warn('Fullscreen viewer not found! Creating emergency viewer elements');
+                
+                // Create the fullscreen viewer elements
+                const viewerDiv = document.createElement('div');
+                viewerDiv.className = 'fullscreen-viewer';
+                
+                const closeDiv = document.createElement('div');
+                closeDiv.className = 'fullscreen-close';
+                closeDiv.innerHTML = '<i class="fas fa-times"></i>';
+                
+                const prevDiv = document.createElement('div');
+                prevDiv.className = 'fullscreen-nav prev';
+                prevDiv.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                
+                const nextDiv = document.createElement('div');
+                nextDiv.className = 'fullscreen-nav next';
+                nextDiv.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                
+                const imageElement = document.createElement('img');
+                imageElement.className = 'fullscreen-image';
+                imageElement.alt = '';
+                
+                const counterDiv = document.createElement('div');
+                counterDiv.className = 'fullscreen-counter';
+                counterDiv.textContent = '1 / 10';
+                
+                // Append all elements to the viewer
+                viewerDiv.appendChild(closeDiv);
+                viewerDiv.appendChild(prevDiv);
+                viewerDiv.appendChild(nextDiv);
+                viewerDiv.appendChild(imageElement);
+                viewerDiv.appendChild(counterDiv);
+                
+                // Add to the document body
+                document.body.appendChild(viewerDiv);
+                
+                // Add emergency styles if needed
+                const existingStyles = document.querySelector('style#emergency-fullscreen-styles');
+                if (!existingStyles) {
+                    const styleElement = document.createElement('style');
+                    styleElement.id = 'emergency-fullscreen-styles';
+                    styleElement.textContent = `
+                        .fullscreen-viewer {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background-color: rgba(0, 0, 0, 0.95);
+                            z-index: 9999;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            opacity: 0;
+                            visibility: hidden;
+                            transition: opacity 0.3s ease, visibility 0.3s ease;
+                        }
+                        .fullscreen-viewer.active {
+                            opacity: 1;
+                            visibility: visible;
+                        }
+                        .fullscreen-image {
+                            max-width: 85%;
+                            max-height: 85%;
+                            object-fit: contain;
+                            border-radius: 5px;
+                        }
+                        .fullscreen-close {
+                            position: absolute;
+                            top: 20px;
+                            right: 20px;
+                            width: 40px;
+                            height: 40px;
+                            background-color: rgba(255, 255, 255, 0.2);
+                            border-radius: 50%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            cursor: pointer;
+                            z-index: 10000;
+                        }
+                        .fullscreen-close i {
+                            color: white;
+                            font-size: 20px;
+                        }
+                        .fullscreen-nav {
+                            position: absolute;
+                            width: 50px;
+                            height: 50px;
+                            background-color: rgba(255, 255, 255, 0.2);
+                            border-radius: 50%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            cursor: pointer;
+                            z-index: 10000;
+                        }
+                        .fullscreen-nav.prev {
+                            left: 20px;
+                        }
+                        .fullscreen-nav.next {
+                            right: 20px;
+                        }
+                        .fullscreen-nav i {
+                            color: white;
+                            font-size: 24px;
+                        }
+                        .fullscreen-counter {
+                            position: absolute;
+                            bottom: 20px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            color: white;
+                            font-size: 14px;
+                            padding: 5px 15px;
+                            background-color: rgba(0, 0, 0, 0.5);
+                            border-radius: 20px;
+                            z-index: 10000;
+                        }
+                    `;
+                    document.head.appendChild(styleElement);
+                }
+                
+                console.log('Emergency fullscreen viewer created');
+                
+                // Initialize again after creating the viewer
+                setTimeout(setupImageGallery, 100);
+            } else {
+                console.log('Fullscreen viewer found, no need to create emergency elements');
+            }
+        }, 1500);
+
+        // Super emergency fallback in case other methods fail
+        setTimeout(() => {
+            console.log('Emergency fallback: Adding direct global click handler');
+            // Track currently active images for navigation
+            let currentViewerImages = [];
+            let currentViewerIndex = 0;
+            
+            document.addEventListener('click', function(event) {
+                const clickedImg = event.target.closest('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img');
+                if (clickedImg) {
+                    console.log('Image clicked via global handler');
+                    
+                    // Show the image in fullscreen
+                    const fullscreenViewer = document.querySelector('.fullscreen-viewer');
+                    const fullscreenImage = document.querySelector('.fullscreen-image');
+                    const fullscreenCounter = document.querySelector('.fullscreen-counter');
+                    
+                    if (fullscreenViewer && fullscreenImage) {
+                        // Get all images in this modal
+                        const modal = clickedImg.closest('.modal-content-wrapper');
+                        if (modal) {
+                            currentViewerImages = Array.from(modal.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img'));
+                            currentViewerIndex = currentViewerImages.indexOf(clickedImg);
+                            
+                            // Update counter
+                            if (fullscreenCounter) {
+                                fullscreenCounter.textContent = `${currentViewerIndex + 1} / ${currentViewerImages.length}`;
+                            }
+                        }
+                        
+                        fullscreenImage.src = clickedImg.src;
+                        fullscreenViewer.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                        console.log('Fullscreen activated via global handler');
+                    }
+                }
+                
+                // Handle navigation arrows in fullscreen viewer
+                const prevArrow = event.target.closest('.fullscreen-nav.prev');
+                if (prevArrow && currentViewerImages.length > 0) {
+                    console.log('Previous arrow clicked via global handler');
+                    navigateEmergencyGallery('prev');
+                }
+                
+                const nextArrow = event.target.closest('.fullscreen-nav.next');
+                if (nextArrow && currentViewerImages.length > 0) {
+                    console.log('Next arrow clicked via global handler');
+                    navigateEmergencyGallery('next');
+                }
+                
+                // Handle close button
+                const closeButton = event.target.closest('.fullscreen-close');
+                if (closeButton) {
+                    console.log('Close button clicked via global handler');
+                    const viewer = document.querySelector('.fullscreen-viewer');
+                    if (viewer) {
+                        viewer.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                }
+                
+                // Handle click outside to close
+                if (event.target.classList.contains('fullscreen-viewer')) {
+                    console.log('Clicked outside image via global handler');
+                    event.target.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Add keyboard support
+            document.addEventListener('keydown', function(event) {
+                const fullscreenViewer = document.querySelector('.fullscreen-viewer');
+                if (!fullscreenViewer || !fullscreenViewer.classList.contains('active')) return;
+                
+                console.log('Key pressed in emergency mode:', event.key);
+                if (event.key === 'ArrowLeft') {
+                    navigateEmergencyGallery('prev');
+                } else if (event.key === 'ArrowRight') {
+                    navigateEmergencyGallery('next');
+                } else if (event.key === 'Escape') {
+                    fullscreenViewer.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Emergency gallery navigation
+            function navigateEmergencyGallery(direction) {
+                if (currentViewerImages.length === 0) return;
+                
+                const fullscreenImage = document.querySelector('.fullscreen-image');
+                const fullscreenCounter = document.querySelector('.fullscreen-counter');
+                if (!fullscreenImage) return;
+                
+                // Update index
+                if (direction === 'prev') {
+                    currentViewerIndex = (currentViewerIndex === 0) ? currentViewerImages.length - 1 : currentViewerIndex - 1;
+                } else {
+                    currentViewerIndex = (currentViewerIndex === currentViewerImages.length - 1) ? 0 : currentViewerIndex + 1;
+                }
+                
+                console.log('Emergency navigation to index:', currentViewerIndex);
+                
+                // Update image with fade effect
+                fullscreenImage.style.opacity = '0.5';
+                setTimeout(() => {
+                    fullscreenImage.src = currentViewerImages[currentViewerIndex].src;
+                    if (fullscreenCounter) {
+                        fullscreenCounter.textContent = `${currentViewerIndex + 1} / ${currentViewerImages.length}`;
+                    }
+                    fullscreenImage.style.opacity = '1';
+                }, 200);
+            }
+        }, 2000);
+
+        // ULTRA SIMPLE DIRECT APPROACH
+        // This is a very simple and direct implementation that should work regardless of other code
+        setTimeout(() => {
+            console.log('🔴 CREATING FRESH FULLSCREEN VIEWER ELEMENT');
+            
+            // Remove any existing fullscreen viewer to avoid conflicts
+            document.querySelectorAll('.fullscreen-viewer').forEach(el => {
+                console.log('🔴 REMOVING EXISTING VIEWER:', el);
+                el.remove();
+            });
+            
+            // Create a fresh fullscreen viewer element
+            const fsViewer = document.createElement('div');
+            fsViewer.className = 'fullscreen-viewer';
+            fsViewer.id = 'fs-viewer-' + Date.now(); // Add unique ID for debugging
+            fsViewer.innerHTML = `
+                <div class="fullscreen-close"><i class="fas fa-times"></i></div>
+                <div class="fullscreen-nav prev"><i class="fas fa-chevron-left"></i></div>
+                <div class="fullscreen-nav next"><i class="fas fa-chevron-right"></i></div>
+                <img src="" alt="" class="fullscreen-image">
+                <div class="fullscreen-counter">1 / 1</div>
+            `;
+            document.body.appendChild(fsViewer);
+            console.log('🔴 CREATED NEW VIEWER WITH ID:', fsViewer.id);
+            
+            // Get the newly created image element
+            const fsImage = fsViewer.querySelector('.fullscreen-image');
+            
+            // Add some inline styles to ensure visibility
+            fsViewer.style.position = 'fixed';
+            fsViewer.style.top = '0';
+            fsViewer.style.left = '0';
+            fsViewer.style.width = '100%';
+            fsViewer.style.height = '100%';
+            fsViewer.style.backgroundColor = 'rgba(0, 0, 0, 0.98)';
+            fsViewer.style.zIndex = '9999999'; // Ultra high z-index
+            
+            // Variables to store gallery state
+            let currentGalleryImages = [];
+            let currentImageIndex = 0;
+            
+            // CORE FUNCTIONALITY: Direct image click handler with minimal dependencies
+            function openGallery(clickedImage) {
+                console.log('🔥 EXECUTING GALLERY OPEN');
+                // Find all images in the current modal
+                const modal = clickedImage.closest('.modal-content-wrapper');
+                if (!modal) {
+                    console.error('Could not find parent modal-content-wrapper');
+                    return;
+                }
+                
+                currentGalleryImages = Array.from(modal.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img'));
+                currentImageIndex = currentGalleryImages.indexOf(clickedImage);
+                
+                if (currentImageIndex === -1) currentImageIndex = 0;
+                
+                console.log('🔴 OPENING GALLERY WITH IMAGE:', clickedImage.src);
+                console.log('🔴 CURRENT INDEX:', currentImageIndex, 'OF', currentGalleryImages.length);
+                
+                // Set the image source
+                fsImage.src = clickedImage.src;
+                console.log('🔴 SET IMAGE SRC TO:', fsImage.src);
+                
+                // Update counter
+                const counter = fsViewer.querySelector('.fullscreen-counter');
+                if (counter) {
+                    counter.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
+                    console.log('🔴 SET COUNTER TO:', counter.textContent);
+                }
+                
+                // Show the viewer
+                console.log('🔴 VIEWER BEFORE:', fsViewer.className, 'VISIBLE:', fsViewer.style.visibility, 'OPACITY:', fsViewer.style.opacity);
+                
+                // Force showing with direct styles
+                fsViewer.style.display = 'flex';
+                fsViewer.style.opacity = '1';
+                fsViewer.style.visibility = 'visible';
+                fsViewer.classList.add('active');
+                fsViewer.style.pointerEvents = 'all';
+                document.body.style.overflow = 'hidden';
+                
+                console.log('🔴 VIEWER AFTER:', fsViewer.className, 'VISIBLE:', fsViewer.style.visibility, 'OPACITY:', fsViewer.style.opacity);
+                console.log('🔥 GALLERY SHOULD NOW BE VISIBLE');
+                
+                // Print computed styles to debug
+                const computedStyle = window.getComputedStyle(fsViewer);
+                console.log('🔴 COMPUTED STYLES - Display:', computedStyle.display, 
+                            'Opacity:', computedStyle.opacity, 
+                            'Visibility:', computedStyle.visibility,
+                            'Z-Index:', computedStyle.zIndex);
+            }
+            
+            // Close gallery
+            function closeGallery() {
+                console.log('🔴 CLOSING GALLERY');
+                fsViewer.style.opacity = '0';
+                fsViewer.style.visibility = 'hidden';
+                fsViewer.classList.remove('active');
+                document.body.style.overflow = '';
+                console.log('🔥 GALLERY CLOSED');
+            }
+            
+            // Navigate to previous image
+            function showPreviousImage() {
+                if (currentGalleryImages.length <= 1) return;
+                
+                currentImageIndex = (currentImageIndex === 0) ? 
+                    currentGalleryImages.length - 1 : currentImageIndex - 1;
+                
+                console.log('🔴 NAVIGATING TO PREVIOUS IMAGE, NEW INDEX:', currentImageIndex);
+                
+                fsImage.style.opacity = '0.5';
+                setTimeout(() => {
+                    fsImage.src = currentGalleryImages[currentImageIndex].src;
+                    
+                    // Update counter
+                    const counter = fsViewer.querySelector('.fullscreen-counter');
+                    if (counter) {
+                        counter.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
+                    }
+                    
+                    fsImage.style.opacity = '1';
+                }, 200);
+                
+                console.log('🔥 SHOWING PREVIOUS IMAGE: ' + currentImageIndex);
+            }
+            
+            // Navigate to next image
+            function showNextImage() {
+                if (currentGalleryImages.length <= 1) return;
+                
+                currentImageIndex = (currentImageIndex === currentGalleryImages.length - 1) ? 
+                    0 : currentImageIndex + 1;
+                
+                console.log('🔴 NAVIGATING TO NEXT IMAGE, NEW INDEX:', currentImageIndex);
+                
+                fsImage.style.opacity = '0.5';
+                setTimeout(() => {
+                    fsImage.src = currentGalleryImages[currentImageIndex].src;
+                    
+                    // Update counter
+                    const counter = fsViewer.querySelector('.fullscreen-counter');
+                    if (counter) {
+                        counter.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
+                    }
+                    
+                    fsImage.style.opacity = '1';
+                }, 200);
+                
+                console.log('🔥 SHOWING NEXT IMAGE: ' + currentImageIndex);
+            }
+            
+            // Setup navigation buttons
+            const closeBtn = fsViewer.querySelector('.fullscreen-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeGallery);
+                console.log('🔴 CLOSE BUTTON HANDLER ADDED');
+            }
+            
+            const prevBtn = fsViewer.querySelector('.fullscreen-nav.prev');
+            if (prevBtn) {
+                prevBtn.addEventListener('click', showPreviousImage);
+                console.log('🔴 PREV BUTTON HANDLER ADDED');
+            }
+            
+            const nextBtn = fsViewer.querySelector('.fullscreen-nav.next');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', showNextImage);
+                console.log('🔴 NEXT BUTTON HANDLER ADDED');
+            }
+            
+            // Close when clicking outside image
+            fsViewer.addEventListener('click', function(e) {
+                if (e.target === fsViewer) {
+                    console.log('🔴 CLICKED OUTSIDE IMAGE, CLOSING');
+                    closeGallery();
+                }
+            });
+            
+            // Setup keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (!fsViewer.classList.contains('active')) return;
+                
+                console.log('🔴 KEY PRESSED:', e.key);
+                
+                if (e.key === 'Escape') {
+                    closeGallery();
+                } else if (e.key === 'ArrowLeft') {
+                    showPreviousImage();
+                } else if (e.key === 'ArrowRight') {
+                    showNextImage();
+                }
+            });
+            
+            // Direct global click handler for all images within modals
+            document.addEventListener('click', function(e) {
+                // Only handle actual img elements
+                if (e.target.tagName === 'IMG') {
+                    // Check if it's a gallery image
+                    const isGalleryImage = e.target.closest('.modal-main-image, .modal-secondary-image, .modal-additional-image');
+                    
+                    if (isGalleryImage) {
+                        console.log('🔴 IMAGE CLICKED VIA GLOBAL HANDLER:', e.target.src);
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openGallery(e.target);
+                        return false;
+                    }
+                }
+            }, true); // Use capture phase
+            
+            // Ensure modals fully load before adding click handlers directly
+            const modalObserver = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.attributeName === 'class') {
+                        const target = mutation.target;
+                        if (target.classList.contains('active') && target.classList.contains('project-modal')) {
+                            console.log('🔴 MODAL BECAME ACTIVE, PREPARING IMAGE CLICK HANDLERS');
+                            
+                            // Give modal time to fully render
+                            setTimeout(function() {
+                                // Direct click handlers to modal images
+                                const modalImages = target.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img');
+                                
+                                console.log('🔴 ADDING DIRECT CLICK HANDLERS TO', modalImages.length, 'MODAL IMAGES');
+                                
+                                modalImages.forEach(function(img) {
+                                    // Remove and recreate the image to clear any event handlers
+                                    const parent = img.parentNode;
+                                    const newImg = document.createElement('img');
+                                    newImg.src = img.src;
+                                    newImg.alt = img.alt;
+                                    newImg.style.cursor = 'pointer';
+                                    
+                                    // Add direct click handler
+                                    newImg.onclick = function(e) {
+                                        console.log('🔴 DIRECT IMAGE CLICK!', newImg.src);
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        openGallery(newImg);
+                                        return false;
+                                    };
+                                    
+                                    // Replace old image with new one
+                                    parent.replaceChild(newImg, img);
+                                });
+                                
+                                console.log('🔴 DIRECT HANDLERS ADDED TO MODAL IMAGES');
+                            }, 500);
+                        }
+                    }
+                });
+            });
+            
+            // Observe all project modals
+            document.querySelectorAll('.project-modal').forEach(function(modal) {
+                modalObserver.observe(modal, { attributes: true });
+            });
+            
+            console.log('🔥 FULLSCREEN GALLERY INITIALIZED WITH MUTATION OBSERVER');
+        }, 500);
+
+        // Add the most direct possible click handler for modal gallery images
+        setTimeout(() => {
+            console.log('Adding ultra-direct gallery image click handlers');
+            
+            function setupDirectGalleryClicks() {
+                const galleryImages = document.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img');
+                console.log('Setting up direct click handlers for', galleryImages.length, 'gallery images');
+                
+                galleryImages.forEach(img => {
+                    // Remove all existing listeners by cloning and replacing
+                    const newImg = img.cloneNode(true);
+                    img.parentNode.replaceChild(newImg, img);
+                    
+                    // Add a fresh, direct click handler
+                    newImg.style.cursor = 'pointer';
+                    newImg.onclick = function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        console.log('Direct gallery image click detected!', this.src);
+                        
+                        // Get the fullscreen viewer
+                        const viewer = document.querySelector('.fullscreen-viewer');
+                        const image = document.querySelector('.fullscreen-image');
+                        const counter = document.querySelector('.fullscreen-counter');
+                        
+                        if (!viewer || !image) {
+                            console.error('Fullscreen viewer elements not found!');
+                            return;
+                        }
+                        
+                        // Get all images in this modal for navigation
+                        const modal = this.closest('.modal-content-wrapper');
+                        if (!modal) {
+                            console.error('Modal content wrapper not found!');
+                            return;
+                        }
+                        
+                        const allModalImages = Array.from(modal.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img'));
+                        const currentIndex = allModalImages.indexOf(this);
+                        
+                        // Set the fullscreen image source
+                        image.src = this.src;
+                        
+                        // Update counter if available
+                        if (counter) {
+                            counter.textContent = `${currentIndex + 1} / ${allModalImages.length}`;
+                        }
+                        
+                        // Apply direct styles to ensure visibility
+                        viewer.style.display = 'flex';
+                        viewer.style.opacity = '1';
+                        viewer.style.visibility = 'visible';
+                        viewer.style.pointerEvents = 'all';
+                        viewer.classList.add('active');
+                        
+                        // Store the current images and index for navigation
+                        window.currentGalleryImages = allModalImages;
+                        window.currentGalleryIndex = currentIndex;
+                        
+                        // Lock body scroll
+                        document.body.style.overflow = 'hidden';
+                        
+                        console.log('Fullscreen viewer displayed with image', currentIndex + 1, 'of', allModalImages.length);
+                        
+                        return false;
+                    };
+                });
+            }
+            
+            // Call immediately
+            setupDirectGalleryClicks();
+            
+            // Also add navigation functionality
+            const prevButton = document.querySelector('.fullscreen-nav.prev');
+            const nextButton = document.querySelector('.fullscreen-nav.next');
+            const closeButton = document.querySelector('.fullscreen-close');
+            const viewer = document.querySelector('.fullscreen-viewer');
+            
+            if (prevButton) {
+                prevButton.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!window.currentGalleryImages || !window.currentGalleryImages.length) return;
+                    
+                    window.currentGalleryIndex = window.currentGalleryIndex <= 0 ? 
+                        window.currentGalleryImages.length - 1 : window.currentGalleryIndex - 1;
+                    
+                    const image = document.querySelector('.fullscreen-image');
+                    const counter = document.querySelector('.fullscreen-counter');
+                    
+                    if (image) {
+                        image.src = window.currentGalleryImages[window.currentGalleryIndex].src;
+                    }
+                    
+                    if (counter) {
+                        counter.textContent = `${window.currentGalleryIndex + 1} / ${window.currentGalleryImages.length}`;
+                    }
+                };
+            }
+            
+            if (nextButton) {
+                nextButton.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!window.currentGalleryImages || !window.currentGalleryImages.length) return;
+                    
+                    window.currentGalleryIndex = window.currentGalleryIndex >= window.currentGalleryImages.length - 1 ? 
+                        0 : window.currentGalleryIndex + 1;
+                    
+                    const image = document.querySelector('.fullscreen-image');
+                    const counter = document.querySelector('.fullscreen-counter');
+                    
+                    if (image) {
+                        image.src = window.currentGalleryImages[window.currentGalleryIndex].src;
+                    }
+                    
+                    if (counter) {
+                        counter.textContent = `${window.currentGalleryIndex + 1} / ${window.currentGalleryImages.length}`;
+                    }
+                };
+            }
+            
+            if (closeButton) {
+                closeButton.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    if (viewer) {
+                        viewer.classList.remove('active');
+                        viewer.style.opacity = '0';
+                        viewer.style.visibility = 'hidden';
+                        document.body.style.overflow = '';
+                    }
+                };
+            }
+            
+            if (viewer) {
+                viewer.onclick = function(e) {
+                    if (e.target === viewer) {
+                        viewer.classList.remove('active');
+                        viewer.style.opacity = '0';
+                        viewer.style.visibility = 'hidden';
+                        document.body.style.overflow = '';
+                    }
+                };
+            }
+            
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (!viewer || !viewer.classList.contains('active')) return;
+                
+                if (e.key === 'Escape') {
+                    viewer.classList.remove('active');
+                    viewer.style.opacity = '0';
+                    viewer.style.visibility = 'hidden';
+                    document.body.style.overflow = '';
+                } else if (e.key === 'ArrowLeft' && prevButton) {
+                    prevButton.click();
+                } else if (e.key === 'ArrowRight' && nextButton) {
+                    nextButton.click();
+                }
+            });
+            
+            // Also set up when project modals are opened
+            document.querySelectorAll('.project-link, .btn-small').forEach(link => {
+                link.addEventListener('click', function() {
+                    // Wait for modal to open
+                    setTimeout(setupDirectGalleryClicks, 500);
+                });
+            });
+            
+        }, 1000);
     </script>
 </body>
 </html>
