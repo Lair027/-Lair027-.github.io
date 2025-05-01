@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Viewer Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="certificate-viewer.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .certificates-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .certificates-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .certificate-item {
+            flex: 0 0 calc(33.333% - 20px);
+            max-width: 350px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .certificate-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .certificate-image {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .certificate-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: sepia(0.6) hue-rotate(350deg) brightness(0.9);
+            transition: filter 0.3s ease;
+        }
+        
+        .certificate-item:hover .certificate-image img {
+            filter: none;
+        }
+        
+        .certificate-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+        }
+        
+        .certificate-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .certificate-description {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+    <script src="certificate-viewer.js"></script>
+</head>
+<body>
+    <h1>Certificate Viewer Test</h1>
+    
+    <div class="certificates-container">
+        <!-- Row 1 -->
+        <div class="certificates-row">
+            <!-- Certificate 1 -->
+            <div class="certificate-item">
+                <div class="certificate-image">
+                    <img src="certificates/certificate1.jpg" alt="Webinar Certificate 1">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">Cybersecurity Fundamentals</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificate 2 -->
+            <div class="certificate-item">
+                <div class="certificate-image">
+                    <img src="certificates/certificate2.jpg" alt="Webinar Certificate 2">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">Database Universe</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificate 3 -->
+            <div class="certificate-item">
+                <div class="certificate-image">
+                    <img src="certificates/certificate3.jpg" alt="Webinar Certificate 3">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">FastAPI Development</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Row 2 -->
+        <div class="certificates-row">
+            <!-- Certificate 4 -->
+            <div class="certificate-item">
+                <div class="certificate-image">
+                    <img src="certificates/certificate4.jpg" alt="Webinar Certificate 4">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">GitHub Collaboration</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificate 5 -->
+            <div class="certificate-item">
+                <div class="certificate-image">
+                    <img src="certificates/certificate5.jpg" alt="Webinar Certificate 5">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">User Authentication</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificate 6 -->
+            <div class="certificate-item">
+                <div class="certificate-image">
+                    <img src="certificates/certificate6.jpg" alt="Webinar Certificate 6">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">GitHub Appreciation</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fullscreen Image Viewer -->
+    <div class="certificate-fullscreen-viewer" id="certificate-fullscreen-viewer">
+        <div class="fullscreen-close" role="button" aria-label="Close certificate viewer"><i class="fas fa-times"></i></div>
+        <div class="fullscreen-nav prev" role="button" aria-label="Previous certificate"><i class="fas fa-chevron-left"></i></div>
+        <div class="fullscreen-image">
+            <img src="" alt="Fullscreen Certificate" id="fullscreen-certificate-img">
+        </div>
+        <div class="fullscreen-nav next" role="button" aria-label="Next certificate"><i class="fas fa-chevron-right"></i></div>
+        <div class="fullscreen-counter"><span id="current-certificate">1</span> / <span id="total-certificates">6</span></div>
+    </div>
+</body>
+</html> 

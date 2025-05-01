@@ -6,7 +6,65 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="custom-fixes.css">
+    <!-- Certificate viewer scripts are disabled and replaced with fix-certificate-viewer.js -->
+    <!--<link rel="stylesheet" href="certificate-viewer.css">-->
+    <!--<script src="certificate-viewer.js"></script>-->
     <title>Portfolio Website</title>
+    <style>
+        /* Ensure the certificate fullscreen viewer is hidden by default */
+        #certificate-fullscreen-viewer,
+        .certificate-fullscreen-viewer,
+        #fixed-certificate-viewer,
+        #inline-certificate-viewer {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+        
+        /* Only show certificate viewers when explicitly made active */
+        #certificate-fullscreen-viewer.active,
+        .certificate-fullscreen-viewer.active,
+        #inline-certificate-viewer[style*="opacity: 1"],
+        #fixed-certificate-viewer[style*="opacity: 1"] {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        /* Standard fullscreen viewer for projects should work normally */
+        .fullscreen-viewer {
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+            /* Other styles are in style.css */
+        }
+        
+        .fullscreen-viewer.active {
+            display: flex;
+            opacity: 1;
+            visibility: visible;
+            /* Other styles are in style.css */
+        }
+
+        /* Ensure the fullscreen image is properly styled */
+        .fullscreen-image {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+            display: block !important;
+            margin: 0 auto;
+            border-radius: 2px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Ensure the fixed certificate viewer is not affected by other styles */
+        #fixed-certificate-viewer {
+            /* These styles will be applied by the script directly */
+        }
+    </style>
+    
+    <!-- Include the certificate viewer fix script at the top -->
+    <script src="fix-certificate-viewer.js"></script>
 </head>
 <body>
     <header>
@@ -42,6 +100,8 @@
     </div>
 
     <script>
+        // Certificate viewer functionality has been moved to certificate-viewer.js
+        
         // Load components
         fetch('components/home.html')
             .then(response => response.text())
@@ -71,16 +131,9 @@
         fetch('components/certificates.html')
             .then(response => response.text())
             .then(data => {
+                console.log('Certificates HTML loaded successfully');
                 document.getElementById('certificates-content').innerHTML = data;
-                // Initialize certificate viewer functionality
-                setTimeout(() => {
-                    if (typeof initCertificateViewers === 'function') {
-                        initCertificateViewers();
-                        console.log('Certificate viewer initialization complete');
-                    } else {
-                        console.error('Certificate viewer function not found');
-                    }
-                }, 500);
+                // Certificate viewer is now handled by certificate-viewer.js
             })
             .catch(error => {
                 console.error('Error loading certificates:', error);
@@ -557,15 +610,80 @@
         let certificatesInitialized = false;
         window.addEventListener('scroll', () => {
             const certificatesSection = document.getElementById('certificates');
-            if (!certificatesInitialized && certificatesSection) {
-                const sectionTop = certificatesSection.getBoundingClientRect().top;
+            const certificatesContent = document.getElementById('certificates-content');
+            
+            if (!certificatesInitialized && (certificatesSection || certificatesContent)) {
+                const section = certificatesSection || certificatesContent;
+                const sectionTop = section.getBoundingClientRect().top;
+                
                 if (sectionTop < window.innerHeight) {
-                    // User has scrolled to certificates section, initialize viewer
+                    // User has scrolled to certificates section
+                    console.log('Scroll detected near certificates section, initializing viewer');
+                    
                     if (typeof initCertificateViewers === 'function') {
-                        initCertificateViewers();
-                        certificatesInitialized = true;
-                        console.log('Certificate viewer initialized on scroll');
+                        try {
+                            initCertificateViewers();
+                            certificatesInitialized = true;
+                            console.log('Certificate viewer initialized on scroll');
+                        } catch (err) {
+                            console.error('Error initializing certificate viewer on scroll:', err);
+                        }
+                    } else {
+                        console.log('Initialization function not available on scroll');
                     }
+                }
+            }
+        });
+
+        // Add direct click handler for certificate items
+        document.addEventListener('click', function(e) {
+            // Check if the target is within a certificate item
+            const certificateItem = e.target.closest('.certificate-item');
+            
+            if (certificateItem) {
+                console.log('Direct certificate click detected');
+                const fullscreenViewer = document.getElementById('certificate-fullscreen-viewer');
+                
+                if (!fullscreenViewer) {
+                    console.error('Certificate viewer not found in direct handler');
+                    return;
+                }
+                
+                // Find all certificates
+                const allCertificates = Array.from(document.querySelectorAll('.certificate-item'));
+                const currentIndex = allCertificates.indexOf(certificateItem);
+                
+                // Get image element
+                const imgSrc = certificateItem.querySelector('img').src;
+                const viewerImg = fullscreenViewer.querySelector('img');
+                if (viewerImg) viewerImg.src = imgSrc;
+                
+                // Update counter if available
+                const currentCountEl = document.getElementById('current-certificate');
+                const totalCountEl = document.getElementById('total-certificates');
+                
+                if (currentCountEl) currentCountEl.textContent = currentIndex + 1;
+                if (totalCountEl) totalCountEl.textContent = allCertificates.length;
+                
+                // Show the viewer
+                fullscreenViewer.classList.add('active');
+                fullscreenViewer.style.display = 'flex';
+                fullscreenViewer.style.opacity = '1';
+                fullscreenViewer.style.visibility = 'visible';
+                document.body.style.overflow = 'hidden';
+                
+                console.log('Certificate viewer activated via direct click');
+            }
+            
+            // Handle direct close button click
+            if (e.target.closest('.certificate-fullscreen-viewer .fullscreen-close')) {
+                const fullscreenViewer = document.getElementById('certificate-fullscreen-viewer');
+                if (fullscreenViewer) {
+                    fullscreenViewer.classList.remove('active');
+                    fullscreenViewer.style.opacity = '0';
+                    fullscreenViewer.style.visibility = 'hidden';
+                    document.body.style.overflow = '';
+                    console.log('Certificate viewer closed via direct click');
                 }
             }
         });
@@ -861,6 +979,18 @@
             fsViewer.style.backgroundColor = 'rgba(0, 0, 0, 0.98)';
             fsViewer.style.zIndex = '9999999'; // Ultra high z-index
             
+            // Make sure the image element has proper display styles
+            if (fsImage) {
+                fsImage.style.maxWidth = '85%';
+                fsImage.style.maxHeight = '85%';
+                fsImage.style.objectFit = 'contain';
+                fsImage.style.display = 'block';
+                fsImage.style.margin = '0 auto';
+                fsImage.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
+                fsImage.style.border = '2px solid rgba(255,255,255,0.2)';
+                fsImage.style.borderRadius = '2px';
+            }
+            
             // Variables to store gallery state
             let currentGalleryImages = [];
             let currentImageIndex = 0;
@@ -883,9 +1013,22 @@
                 console.log('🔴 OPENING GALLERY WITH IMAGE:', clickedImage.src);
                 console.log('🔴 CURRENT INDEX:', currentImageIndex, 'OF', currentGalleryImages.length);
                 
-                // Set the image source
-                fsImage.src = clickedImage.src;
-                console.log('🔴 SET IMAGE SRC TO:', fsImage.src);
+                // Set the image source - force a refresh to help with loading
+                fsImage.src = '';
+                setTimeout(() => {
+                    fsImage.src = clickedImage.src;
+                    console.log('🔴 SET IMAGE SRC TO:', fsImage.src);
+                }, 50);
+                
+                // Create a test element to verify image loading
+                const testImg = new Image();
+                testImg.onload = function() {
+                    console.log('🔴 TEST IMAGE LOADED SUCCESSFULLY:', this.src);
+                };
+                testImg.onerror = function() {
+                    console.error('🔴 TEST IMAGE FAILED TO LOAD:', this.src);
+                };
+                testImg.src = clickedImage.src;
                 
                 // Update counter
                 const counter = fsViewer.querySelector('.fullscreen-counter');
@@ -899,10 +1042,12 @@
                 
                 // Force showing with direct styles
                 fsViewer.style.display = 'flex';
+                fsViewer.style.alignItems = 'center';
+                fsViewer.style.justifyContent = 'center';
                 fsViewer.style.opacity = '1';
                 fsViewer.style.visibility = 'visible';
-                fsViewer.classList.add('active');
                 fsViewer.style.pointerEvents = 'all';
+                fsViewer.classList.add('active');
                 document.body.style.overflow = 'hidden';
                 
                 console.log('🔴 VIEWER AFTER:', fsViewer.className, 'VISIBLE:', fsViewer.style.visibility, 'OPACITY:', fsViewer.style.opacity);
@@ -935,18 +1080,38 @@
                 
                 console.log('🔴 NAVIGATING TO PREVIOUS IMAGE, NEW INDEX:', currentImageIndex);
                 
+                // Apply a fade effect during transition
                 fsImage.style.opacity = '0.5';
-                setTimeout(() => {
-                    fsImage.src = currentGalleryImages[currentImageIndex].src;
+                
+                // Clear the source first to force a reload
+                const newSrc = currentGalleryImages[currentImageIndex].src;
+                fsImage.src = '';
+                
+                // Create a test element to verify image loading
+                const testImg = new Image();
+                testImg.onload = function() {
+                    console.log('🔴 PREV IMAGE LOADED SUCCESSFULLY:', this.src);
                     
-                    // Update counter
-                    const counter = fsViewer.querySelector('.fullscreen-counter');
-                    if (counter) {
-                        counter.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
-                    }
-                    
+                    // Update the actual displayed image
+                    setTimeout(() => {
+                        fsImage.src = newSrc;
+                        
+                        // Update counter
+                        const counter = fsViewer.querySelector('.fullscreen-counter');
+                        if (counter) {
+                            counter.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
+                        }
+                        
+                        fsImage.style.opacity = '1';
+                    }, 100);
+                };
+                
+                testImg.onerror = function() {
+                    console.error('🔴 PREV IMAGE FAILED TO LOAD:', this.src);
                     fsImage.style.opacity = '1';
-                }, 200);
+                };
+                
+                testImg.src = newSrc;
                 
                 console.log('🔥 SHOWING PREVIOUS IMAGE: ' + currentImageIndex);
             }
@@ -960,18 +1125,38 @@
                 
                 console.log('🔴 NAVIGATING TO NEXT IMAGE, NEW INDEX:', currentImageIndex);
                 
+                // Apply a fade effect during transition
                 fsImage.style.opacity = '0.5';
-                setTimeout(() => {
-                    fsImage.src = currentGalleryImages[currentImageIndex].src;
+                
+                // Clear the source first to force a reload
+                const newSrc = currentGalleryImages[currentImageIndex].src;
+                fsImage.src = '';
+                
+                // Create a test element to verify image loading
+                const testImg = new Image();
+                testImg.onload = function() {
+                    console.log('🔴 NEXT IMAGE LOADED SUCCESSFULLY:', this.src);
                     
-                    // Update counter
-                    const counter = fsViewer.querySelector('.fullscreen-counter');
-                    if (counter) {
-                        counter.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
-                    }
-                    
+                    // Update the actual displayed image
+                    setTimeout(() => {
+                        fsImage.src = newSrc;
+                        
+                        // Update counter
+                        const counter = fsViewer.querySelector('.fullscreen-counter');
+                        if (counter) {
+                            counter.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
+                        }
+                        
+                        fsImage.style.opacity = '1';
+                    }, 100);
+                };
+                
+                testImg.onerror = function() {
+                    console.error('🔴 NEXT IMAGE FAILED TO LOAD:', this.src);
                     fsImage.style.opacity = '1';
-                }, 200);
+                };
+                
+                testImg.src = newSrc;
                 
                 console.log('🔥 SHOWING NEXT IMAGE: ' + currentImageIndex);
             }
@@ -1259,6 +1444,87 @@
             });
             
         }, 1000);
+
+        // Add direct click handler for modal images as soon as they appear
+        document.addEventListener('DOMNodeInserted', function(event) {
+            // Check if the inserted node is a modal image or contains modal images
+            if (event.target.nodeType === 1) { // Element node
+                // Look for modal images within the inserted element
+                const modalImages = event.target.querySelectorAll && 
+                                   event.target.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img');
+                
+                if (modalImages && modalImages.length) {
+                    console.log('📸 Found', modalImages.length, 'new modal images, setting up click handlers');
+                    
+                    // Set up click handlers for each image
+                    modalImages.forEach(img => {
+                        // Ensure the image is styled for visibility
+                        img.style.cursor = 'pointer';
+                        img.style.display = 'block';
+                        img.style.maxWidth = '100%';
+                        img.style.height = 'auto';
+                        
+                        // Add click handler
+                        img.onclick = function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            console.log('📸 Direct image click:', this.src);
+                            
+                            // Find all images in the same modal
+                            const modal = this.closest('.modal-content-wrapper');
+                            if (!modal) {
+                                console.error('📸 Modal wrapper not found');
+                                return;
+                            }
+                            
+                            const allImages = Array.from(modal.querySelectorAll('.modal-main-image img, .modal-secondary-image img, .modal-additional-image img'));
+                            const index = allImages.indexOf(this);
+                            
+                            console.log('📸 Clicked image index:', index, 'of', allImages.length);
+                            
+                            // Get the viewer and image
+                            const viewer = document.querySelector('.fullscreen-viewer');
+                            const image = document.querySelector('.fullscreen-image');
+                            const counter = document.querySelector('.fullscreen-counter');
+                            
+                            if (!viewer || !image) {
+                                console.error('📸 Viewer elements not found');
+                                return;
+                            }
+                            
+                            // Clear image source first, then set it (forces reload)
+                            image.src = '';
+                            setTimeout(() => {
+                                image.src = this.src;
+                                
+                                // Update the counter
+                                if (counter) {
+                                    counter.textContent = `${index + 1} / ${allImages.length}`;
+                                }
+                                
+                                // Show the viewer with forced styles
+                                viewer.style.display = 'flex';
+                                viewer.style.justifyContent = 'center';
+                                viewer.style.alignItems = 'center';
+                                viewer.style.opacity = '1';
+                                viewer.style.visibility = 'visible';
+                                viewer.classList.add('active');
+                                
+                                // Store references for navigation
+                                window.currentGalleryImages = allImages;
+                                window.currentGalleryIndex = index;
+                                
+                                // Lock body scroll
+                                document.body.style.overflow = 'hidden';
+                                
+                                console.log('📸 Fullscreen viewer activated with image', index + 1, 'of', allImages.length);
+                            }, 50);
+                        };
+                    });
+                }
+            }
+        });
     </script>
 </body>
 </html>

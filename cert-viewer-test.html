@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Viewer - Minimal Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: #333; }
+        .certificates { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .certificate { 
+            width: 300px; 
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .certificate:hover { transform: translateY(-5px); }
+        .certificate img { 
+            width: 100%; 
+            height: auto; 
+            display: block;
+            filter: sepia(0.6);
+        }
+        .certificate:hover img { filter: none; }
+        
+        /* Fullscreen viewer styles */
+        .fullscreen-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s;
+        }
+        .fullscreen-viewer.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .fullscreen-image {
+            width: 80%;
+            max-width: 1200px;
+            height: auto;
+            display: flex;
+            justify-content: center;
+        }
+        .fullscreen-image img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border: 2px solid white;
+        }
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .prev-btn { left: 20px; }
+        .next-btn { right: 20px; }
+        .counter {
+            position: absolute;
+            bottom: 20px;
+            color: white;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Certificate Viewer Test</h1>
+        
+        <div class="certificates">
+            <div class="certificate" data-index="0">
+                <img src="certificates/certificate1.jpg" alt="Certificate 1">
+            </div>
+            <div class="certificate" data-index="1">
+                <img src="certificates/certificate2.jpg" alt="Certificate 2">
+            </div>
+            <div class="certificate" data-index="2">
+                <img src="certificates/certificate3.jpg" alt="Certificate 3">
+            </div>
+            <div class="certificate" data-index="3">
+                <img src="certificates/certificate4.jpg" alt="Certificate 4">
+            </div>
+            <div class="certificate" data-index="4">
+                <img src="certificates/certificate5.jpg" alt="Certificate 5">
+            </div>
+            <div class="certificate" data-index="5">
+                <img src="certificates/certificate6.jpg" alt="Certificate 6">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fullscreen Viewer -->
+    <div class="fullscreen-viewer">
+        <div class="close-btn"><i class="fas fa-times"></i></div>
+        <div class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></div>
+        <div class="fullscreen-image">
+            <img src="" alt="Fullscreen Certificate">
+        </div>
+        <div class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></div>
+        <div class="counter">1 / 6</div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Certificate Minimal Test loaded');
+            
+            // Get elements
+            const certificates = document.querySelectorAll('.certificate');
+            const viewer = document.querySelector('.fullscreen-viewer');
+            const viewerImg = viewer.querySelector('.fullscreen-image img');
+            const closeBtn = viewer.querySelector('.close-btn');
+            const prevBtn = viewer.querySelector('.prev-btn');
+            const nextBtn = viewer.querySelector('.next-btn');
+            const counter = viewer.querySelector('.counter');
+            
+            // All certificate images
+            const allImages = Array.from(document.querySelectorAll('.certificate img'));
+            let currentIndex = 0;
+            
+            // Add click event to certificates
+            certificates.forEach(cert => {
+                cert.addEventListener('click', function() {
+                    // Get index
+                    currentIndex = parseInt(this.dataset.index);
+                    
+                    // Update viewer
+                    updateViewer();
+                    
+                    // Show viewer
+                    viewer.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            // Function to update viewer
+            function updateViewer() {
+                // Get current image
+                const currentImg = allImages[currentIndex];
+                
+                // Update image source
+                console.log('Setting image src to:', currentImg.src);
+                viewerImg.src = currentImg.src;
+                
+                // Update counter
+                counter.textContent = `${currentIndex + 1} / ${allImages.length}`;
+            }
+            
+            // Close button
+            closeBtn.addEventListener('click', function() {
+                viewer.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            // Previous button
+            prevBtn.addEventListener('click', function() {
+                currentIndex = (currentIndex === 0) ? allImages.length - 1 : currentIndex - 1;
+                updateViewer();
+            });
+            
+            // Next button
+            nextBtn.addEventListener('click', function() {
+                currentIndex = (currentIndex === allImages.length - 1) ? 0 : currentIndex + 1;
+                updateViewer();
+            });
+            
+            // Close when clicking outside
+            viewer.addEventListener('click', function(e) {
+                if (e.target === viewer) {
+                    viewer.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (!viewer.classList.contains('active')) return;
+                
+                if (e.key === 'Escape') {
+                    viewer.classList.remove('active');
+                    document.body.style.overflow = '';
+                } else if (e.key === 'ArrowLeft') {
+                    currentIndex = (currentIndex === 0) ? allImages.length - 1 : currentIndex - 1;
+                    updateViewer();
+                } else if (e.key === 'ArrowRight') {
+                    currentIndex = (currentIndex === allImages.length - 1) ? 0 : currentIndex + 1;
+                    updateViewer();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

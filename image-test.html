@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+        .test-image {
+            max-width: 800px;
+            border: 3px solid #333;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-image {
+            max-width: 90%;
+            max-height: 90vh;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Certificate Image Test</h1>
+    
+    <!-- Direct image test -->
+    <h2>Direct Image Display</h2>
+    <img src="certificates/certificate1.jpg" alt="Certificate 1" class="test-image">
+    
+    <h2>Modal Test</h2>
+    <button class="button" id="openModal">Open Image in Modal</button>
+    
+    <!-- Modal -->
+    <div class="modal" id="imageModal">
+        <img src="certificates/certificate1.jpg" alt="Certificate Modal" class="modal-image" id="modalImage">
+    </div>
+    
+    <script>
+        // Test if images are accessible
+        const images = [
+            "certificates/certificate1.jpg",
+            "certificates/certificate2.jpg",
+            "certificates/certificate3.jpg",
+            "certificates/certificate4.jpg",
+            "certificates/certificate5.jpg",
+            "certificates/certificate6.jpg"
+        ];
+        
+        // Test loading each image
+        images.forEach((src, index) => {
+            const img = new Image();
+            img.onload = function() {
+                console.log(`✅ Image ${index+1} loaded successfully:`, src);
+                // Add a green dot to the page for visual confirmation
+                const dot = document.createElement('div');
+                dot.style.width = '10px';
+                dot.style.height = '10px';
+                dot.style.backgroundColor = 'green';
+                dot.style.borderRadius = '50%';
+                dot.style.display = 'inline-block';
+                dot.style.margin = '0 5px';
+                document.body.appendChild(dot);
+            };
+            img.onerror = function() {
+                console.error(`❌ Image ${index+1} failed to load:`, src);
+                // Add a red dot to the page for visual confirmation
+                const dot = document.createElement('div');
+                dot.style.width = '10px';
+                dot.style.height = '10px';
+                dot.style.backgroundColor = 'red';
+                dot.style.borderRadius = '50%';
+                dot.style.display = 'inline-block';
+                dot.style.margin = '0 5px';
+                document.body.appendChild(dot);
+            };
+            img.src = src;
+        });
+        
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const openModalBtn = document.getElementById('openModal');
+        
+        openModalBtn.addEventListener('click', function() {
+            console.log('Opening modal with image:', modalImg.src);
+            modal.classList.add('show');
+        });
+        
+        modal.addEventListener('click', function() {
+            modal.classList.remove('show');
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Gallery Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .test-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .test-image {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-image:hover {
+            transform: scale(1.03);
+        }
+        .project-gallery-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 9999999;
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
+        .pg-close, .pg-prev, .pg-next {
+            position: absolute;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10000;
+            transition: background-color 0.3s ease;
+        }
+        .pg-close:hover, .pg-prev:hover, .pg-next:hover {
+            background-color: rgba(255,255,255,0.4);
+        }
+        .pg-close {
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+        }
+        .pg-prev, .pg-next {
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+        }
+        .pg-prev {
+            left: 20px;
+        }
+        .pg-next {
+            right: 20px;
+        }
+        .pg-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            margin: auto;
+        }
+        #pg-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            transition: opacity 0.3s ease;
+        }
+        .pg-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 14px;
+            padding: 5px 15px;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 20px;
+        }
+        .pg-status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background-color: rgba(0,0,0,0.7);
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        .control-panel {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+        .debug-panel {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        #debug-log {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Project Gallery Viewer Test</h1>
+    
+    <div class="control-panel">
+        <button id="clear-debug">Clear Debug Log</button>
+        <button id="check-viewer">Check Viewer Status</button>
+    </div>
+    
+    <div class="test-container">
+        <img src="projects/exam.io/exam.io-main.png" alt="Exam.io" class="test-image">
+        <img src="projects/exam.io/exam.io1.png" alt="Exam.io 1" class="test-image">
+        <img src="projects/exam.io/exam.io2.png" alt="Exam.io 2" class="test-image">
+        <img src="projects/exam.io/exam.io3.png" alt="Exam.io 3" class="test-image">
+    </div>
+    
+    <div class="test-container">
+        <img src="projects/duel-learn/duel-learn-main.png" alt="Duel Learn" class="test-image">
+        <img src="projects/duel-learn/duel-learn1.png" alt="Duel Learn 1" class="test-image">
+        <img src="projects/duel-learn/duel-learn2.png" alt="Duel Learn 2" class="test-image">
+        <img src="projects/duel-learn/duel-learn3.png" alt="Duel Learn 3" class="test-image">
+    </div>
+    
+    <div class="debug-panel">
+        <h3>Debug Log</h3>
+        <div id="debug-log"></div>
+    </div>
+    
+    <!-- Project Gallery Viewer Element -->
+    <div class="project-gallery-viewer" id="project-gallery-viewer">
+        <div class="pg-close">
+            <i class="fas fa-times" style="color:white; font-size:20px;"></i>
+        </div>
+        <div class="pg-prev">
+            <i class="fas fa-chevron-left" style="color:white; font-size:24px;"></i>
+        </div>
+        <div class="pg-next">
+            <i class="fas fa-chevron-right" style="color:white; font-size:24px;"></i>
+        </div>
+        <div class="pg-container">
+            <img src="" alt="Gallery Image" id="pg-image">
+        </div>
+        <div class="pg-counter">1 / 1</div>
+        <div class="pg-status">Loading image...</div>
+    </div>
+    
+    <script>
+        // Debug logging function
+        function debugLog(message) {
+            const logElement = document.getElementById('debug-log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        // Clear debug log
+        document.getElementById('clear-debug').addEventListener('click', function() {
+            document.getElementById('debug-log').innerHTML = '';
+        });
+        
+        // Check viewer status
+        document.getElementById('check-viewer').addEventListener('click', function() {
+            const viewer = document.getElementById('project-gallery-viewer');
+            const computedStyle = window.getComputedStyle(viewer);
+            
+            debugLog('VIEWER STATUS:');
+            debugLog(`- Display: ${computedStyle.display}`);
+            debugLog(`- Opacity: ${computedStyle.opacity}`);
+            debugLog(`- Visibility: ${computedStyle.visibility}`);
+            debugLog(`- Z-Index: ${computedStyle.zIndex}`);
+        });
+        
+        // Initialize gallery functionality when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('Initializing test gallery');
+            
+            // Gallery elements
+            const viewer = document.getElementById('project-gallery-viewer');
+            const imageEl = document.getElementById('pg-image');
+            const closeBtn = viewer.querySelector('.pg-close');
+            const prevBtn = viewer.querySelector('.pg-prev');
+            const nextBtn = viewer.querySelector('.pg-next');
+            const counterEl = viewer.querySelector('.pg-counter');
+            const statusEl = viewer.querySelector('.pg-status');
+            
+            // Gallery state
+            let currentImages = [];
+            let currentIndex = 0;
+            
+            // Initialize click handlers for test images
+            const testImages = document.querySelectorAll('.test-image');
+            debugLog(`Found ${testImages.length} test images`);
+            
+            testImages.forEach(img => {
+                img.addEventListener('click', function() {
+                    debugLog(`Image clicked: ${this.src}`);
+                    openGallery(this);
+                });
+            });
+            
+            // Open gallery with image
+            function openGallery(imgElement) {
+                debugLog(`Opening gallery with image: ${imgElement.src}`);
+                
+                // Find all images in the container
+                const container = imgElement.closest('.test-container');
+                currentImages = Array.from(container.querySelectorAll('.test-image'));
+                currentIndex = currentImages.indexOf(imgElement);
+                
+                debugLog(`Gallery contains ${currentImages.length} images, current index: ${currentIndex}`);
+                
+                // Show loading status
+                showStatus('Loading image...');
+                
+                // Create a new image for loading
+                const newImage = new Image();
+                newImage.id = 'pg-image';
+                newImage.alt = 'Gallery Image';
+                newImage.style.cssText = 'max-width:100%; max-height:100%; object-fit:contain; box-shadow:0 0 30px rgba(0,0,0,0.5); opacity:0; transition:opacity 0.3s ease;';
+                
+                // Set up load handlers
+                newImage.onload = function() {
+                    debugLog(`Image loaded successfully: ${this.src}`);
+                    hideStatus();
+                    this.style.opacity = '1';
+                };
+                
+                newImage.onerror = function() {
+                    debugLog(`Error loading image: ${this.src}`);
+                    showStatus('Error loading image', true);
+                };
+                
+                // Set source after adding handlers
+                newImage.src = imgElement.src;
+                
+                // Replace existing image
+                const container = viewer.querySelector('.pg-container');
+                const oldImage = container.querySelector('img');
+                if (oldImage) {
+                    container.replaceChild(newImage, oldImage);
+                } else {
+                    container.appendChild(newImage);
+                }
+                
+                // Update counter
+                updateCounter();
+                
+                // Show viewer
+                viewer.style.display = 'flex';
+                
+                // Force reflow
+                void viewer.offsetWidth;
+                
+                // Fade in
+                viewer.style.opacity = '1';
+                viewer.style.visibility = 'visible';
+                
+                // Prevent scrolling
+                document.body.style.overflow = 'hidden';
+                
+                // Log status after opening
+                const computedStyle = window.getComputedStyle(viewer);
+                debugLog('VIEWER OPENED:');
+                debugLog(`- Display: ${computedStyle.display}`);
+                debugLog(`- Opacity: ${computedStyle.opacity}`);
+                debugLog(`- Visibility: ${computedStyle.visibility}`);
+                debugLog(`- Z-Index: ${computedStyle.zIndex}`);
+            }
+            
+            // Close gallery
+            function closeGallery() {
+                debugLog('Closing gallery');
+                
+                // Fade out
+                viewer.style.opacity = '0';
+                viewer.style.visibility = 'hidden';
+                
+                // Hide after animation
+                setTimeout(() => {
+                    viewer.style.display = 'none';
+                    debugLog('Gallery is now hidden');
+                }, 300);
+                
+                // Re-enable scrolling
+                document.body.style.overflow = '';
+            }
+            
+            // Navigate to previous image
+            function showPrevImage() {
+                if (currentImages.length <= 1) return;
+                
+                currentIndex = (currentIndex <= 0) ? 
+                    currentImages.length - 1 : currentIndex - 1;
+                    
+                debugLog(`Navigating to previous image, new index: ${currentIndex}`);
+                updateImage();
+            }
+            
+            // Navigate to next image
+            function showNextImage() {
+                if (currentImages.length <= 1) return;
+                
+                currentIndex = (currentIndex >= currentImages.length - 1) ? 
+                    0 : currentIndex + 1;
+                    
+                debugLog(`Navigating to next image, new index: ${currentIndex}`);
+                updateImage();
+            }
+            
+            // Update image in viewer
+            function updateImage() {
+                showStatus('Loading image...');
+                
+                // Create new image
+                const newImage = new Image();
+                newImage.id = 'pg-image';
+                newImage.alt = 'Gallery Image';
+                newImage.style.cssText = 'max-width:100%; max-height:100%; object-fit:contain; box-shadow:0 0 30px rgba(0,0,0,0.5); opacity:0; transition:opacity 0.3s ease;';
+                
+                // Set up load handlers
+                newImage.onload = function() {
+                    debugLog(`Image loaded successfully: ${this.src}`);
+                    hideStatus();
+                    this.style.opacity = '1';
+                };
+                
+                newImage.onerror = function() {
+                    debugLog(`Error loading image: ${this.src}`);
+                    showStatus('Error loading image', true);
+                };
+                
+                // Set source AFTER adding handlers
+                newImage.src = currentImages[currentIndex].src;
+                
+                // Replace existing image
+                const container = viewer.querySelector('.pg-container');
+                const oldImage = container.querySelector('img');
+                if (oldImage) {
+                    container.replaceChild(newImage, oldImage);
+                } else {
+                    container.appendChild(newImage);
+                }
+                
+                // Update counter
+                updateCounter();
+            }
+            
+            // Update counter display
+            function updateCounter() {
+                counterEl.textContent = `${currentIndex + 1} / ${currentImages.length}`;
+            }
+            
+            // Show status message
+            function showStatus(message, isError = false) {
+                statusEl.textContent = message;
+                statusEl.style.display = 'block';
+                
+                if (isError) {
+                    statusEl.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+                } else {
+                    statusEl.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                }
+                
+                debugLog(`Status: ${message}`);
+            }
+            
+            // Hide status message
+            function hideStatus() {
+                statusEl.style.display = 'none';
+            }
+            
+            // Event listeners
+            closeBtn.addEventListener('click', closeGallery);
+            prevBtn.addEventListener('click', showPrevImage);
+            nextBtn.addEventListener('click', showNextImage);
+            
+            // Click outside to close
+            viewer.addEventListener('click', function(e) {
+                if (e.target === viewer) {
+                    closeGallery();
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                // Only respond when gallery is open
+                if (viewer.style.display !== 'flex') return;
+                
+                debugLog(`Key pressed: ${e.key}`);
+                
+                if (e.key === 'Escape') {
+                    closeGallery();
+                } else if (e.key === 'ArrowLeft') {
+                    showPrevImage();
+                } else if (e.key === 'ArrowRight') {
+                    showNextImage();
+                }
+            });
+            
+            debugLog('Gallery initialization complete');
+        });
+    </script>
+</body>
+</html> 

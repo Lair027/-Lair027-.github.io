@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Direct Fix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            position: relative;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .certificates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .certificate-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        .certificate-item:hover {
+            transform: translateY(-5px);
+        }
+        .certificate-image {
+            overflow: hidden;
+            position: relative;
+        }
+        .certificate-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: sepia(0.6) hue-rotate(350deg) brightness(0.9);
+            transition: filter 0.3s ease;
+        }
+        .certificate-item:hover .certificate-image img {
+            filter: none;
+        }
+        .certificate-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .certificate-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .certificate-description {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .fullscreen-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .fullscreen-container {
+            position: relative;
+            width: 80%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .fullscreen-image {
+            max-width: 90%;
+            max-height: 80vh;
+            border: 3px solid white;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            display: block;
+        }
+        .fullscreen-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #a67c52;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10001;
+        }
+        .fullscreen-close i {
+            color: white;
+            font-size: 20px;
+        }
+        .fullscreen-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: #a67c52;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10001;
+        }
+        .fullscreen-nav.prev {
+            left: 20px;
+        }
+        .fullscreen-nav.next {
+            right: 20px;
+        }
+        .fullscreen-nav i {
+            color: white;
+            font-size: 20px;
+        }
+        .fullscreen-counter {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+        .status-message {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 10002;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Certificate Viewer Test</h1>
+        
+        <div class="certificates-grid">
+            <!-- Certificate 1 -->
+            <div class="certificate-item" data-index="0">
+                <div class="certificate-image">
+                    <img src="certificates/certificate1.jpg" alt="Certificate 1">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">Cybersecurity Fundamentals</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificate 2 -->
+            <div class="certificate-item" data-index="1">
+                <div class="certificate-image">
+                    <img src="certificates/certificate2.jpg" alt="Certificate 2">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">Database Universe</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificate 3 -->
+            <div class="certificate-item" data-index="2">
+                <div class="certificate-image">
+                    <img src="certificates/certificate3.jpg" alt="Certificate 3">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">FastAPI Development</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificate 4 -->
+            <div class="certificate-item" data-index="3">
+                <div class="certificate-image">
+                    <img src="certificates/certificate4.jpg" alt="Certificate 4">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">GitHub Collaboration</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificate 5 -->
+            <div class="certificate-item" data-index="4">
+                <div class="certificate-image">
+                    <img src="certificates/certificate5.jpg" alt="Certificate 5">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">User Authentication</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificate 6 -->
+            <div class="certificate-item" data-index="5">
+                <div class="certificate-image">
+                    <img src="certificates/certificate6.jpg" alt="Certificate 6">
+                    <div class="certificate-overlay">
+                        <div class="certificate-title">GitHub Appreciation</div>
+                        <div class="certificate-description">University of Caloocan</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fullscreen Viewer -->
+    <div class="fullscreen-viewer" id="fullscreen-viewer">
+        <div class="fullscreen-close"><i class="fas fa-times"></i></div>
+        <div class="fullscreen-nav prev"><i class="fas fa-chevron-left"></i></div>
+        <div class="fullscreen-container">
+            <img src="" alt="Fullscreen Certificate" class="fullscreen-image" id="fullscreen-image">
+        </div>
+        <div class="fullscreen-nav next"><i class="fas fa-chevron-right"></i></div>
+        <div class="fullscreen-counter" id="fullscreen-counter">1 / 6</div>
+    </div>
+    
+    <div class="status-message" id="status-message" style="display: none;"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Immediately ensure the viewer is hidden
+            const viewer = document.getElementById('fullscreen-viewer');
+            viewer.style.display = 'none';
+            viewer.style.opacity = '0';
+            viewer.style.visibility = 'hidden';
+            
+            // Viewer elements
+            const image = document.getElementById('fullscreen-image');
+            const counter = document.getElementById('fullscreen-counter');
+            const closeBtn = document.querySelector('.fullscreen-close');
+            const prevBtn = document.querySelector('.fullscreen-nav.prev');
+            const nextBtn = document.querySelector('.fullscreen-nav.next');
+            const statusMessage = document.getElementById('status-message');
+            
+            // Certificate data
+            const certificates = [
+                {path: 'certificates/certificate1.jpg', title: 'Cybersecurity Fundamentals'},
+                {path: 'certificates/certificate2.jpg', title: 'Database Universe'},
+                {path: 'certificates/certificate3.jpg', title: 'FastAPI Development'},
+                {path: 'certificates/certificate4.jpg', title: 'GitHub Collaboration'},
+                {path: 'certificates/certificate5.jpg', title: 'User Authentication'},
+                {path: 'certificates/certificate6.jpg', title: 'GitHub Appreciation'}
+            ];
+            
+            let currentIndex = 0;
+            
+            // Show status message
+            function showStatus(message, isError = false) {
+                statusMessage.textContent = message;
+                statusMessage.style.backgroundColor = isError ? 'rgba(255,0,0,0.8)' : 'rgba(0,0,0,0.8)';
+                statusMessage.style.display = 'block';
+                
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Open fullscreen viewer
+            function openViewer(index) {
+                currentIndex = index;
+                updateImage();
+                
+                // Set display to flex first
+                viewer.style.display = 'flex';
+                
+                // Force a reflow before changing opacity for transition to work
+                void viewer.offsetWidth;
+                
+                // Then fade in
+                viewer.style.opacity = '1';
+                viewer.style.visibility = 'visible';
+                document.body.style.overflow = 'hidden';
+                showStatus(`Opening certificate ${index + 1}`);
+            }
+            
+            // Close viewer
+            function closeViewer() {
+                // Fade out
+                viewer.style.opacity = '0';
+                viewer.style.visibility = 'hidden';
+                
+                // Set display to none after transition
+                setTimeout(() => {
+                    viewer.style.display = 'none';
+                }, 300);
+                
+                document.body.style.overflow = '';
+                showStatus('Viewer closed');
+            }
+            
+            // Navigate to next certificate
+            function nextCertificate() {
+                currentIndex = (currentIndex + 1) % certificates.length;
+                updateImage();
+            }
+            
+            // Navigate to previous certificate
+            function prevCertificate() {
+                currentIndex = (currentIndex - 1 + certificates.length) % certificates.length;
+                updateImage();
+            }
+            
+            // Update image and counter
+            function updateImage() {
+                const certificate = certificates[currentIndex];
+                
+                // Update status
+                showStatus(`Loading certificate ${currentIndex + 1}: ${certificate.title}`);
+                
+                // Create new image to force reload
+                const newImage = document.createElement('img');
+                newImage.className = 'fullscreen-image';
+                newImage.alt = certificate.title;
+                
+                // Handle load event
+                newImage.onload = function() {
+                    console.log(`Certificate loaded: ${certificate.path}`);
+                    showStatus(`Certificate ${currentIndex + 1} loaded successfully`);
+                };
+                
+                // Handle error event
+                newImage.onerror = function() {
+                    console.error(`Failed to load certificate: ${certificate.path}`);
+                    showStatus(`Failed to load certificate ${currentIndex + 1}`, true);
+                    this.alt = 'Failed to load image';
+                    this.style.backgroundColor = 'rgba(255,0,0,0.2)';
+                    this.style.padding = '20px';
+                };
+                
+                // Set source
+                newImage.src = certificate.path;
+                
+                // Replace the current image
+                const container = document.querySelector('.fullscreen-container');
+                const oldImage = document.getElementById('fullscreen-image');
+                if (oldImage) {
+                    container.replaceChild(newImage, oldImage);
+                } else {
+                    container.appendChild(newImage);
+                }
+                
+                // Update ID for future references
+                newImage.id = 'fullscreen-image';
+                
+                // Update counter
+                counter.textContent = `${currentIndex + 1} / ${certificates.length}`;
+            }
+            
+            // Add event listeners to certificate items
+            document.querySelectorAll('.certificate-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    openViewer(index);
+                });
+            });
+            
+            // Close button event
+            closeBtn.addEventListener('click', closeViewer);
+            
+            // Navigation buttons
+            prevBtn.addEventListener('click', prevCertificate);
+            nextBtn.addEventListener('click', nextCertificate);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (viewer.style.display === 'flex') {
+                    if (e.key === 'Escape') {
+                        closeViewer();
+                    } else if (e.key === 'ArrowLeft') {
+                        prevCertificate();
+                    } else if (e.key === 'ArrowRight') {
+                        nextCertificate();
+                    }
+                }
+            });
+            
+            // Click outside to close
+            viewer.addEventListener('click', function(e) {
+                if (e.target === viewer) {
+                    closeViewer();
+                }
+            });
+            
+            console.log('Certificate viewer initialized');
+        });
+    </script>
+</body>
+</html> 

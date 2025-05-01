@@ -194,6 +194,125 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Certificate viewer setup
+function initCertificateViewers() {
+  console.log('Initializing certificate viewers');
+  
+  // Get all certificate images
+  const certificateItems = document.querySelectorAll('.certificate-item');
+  const fullscreenViewer = document.getElementById('certificate-fullscreen-viewer');
+  const fullscreenImg = document.getElementById('fullscreen-certificate-img');
+  const closeBtn = fullscreenViewer ? fullscreenViewer.querySelector('.fullscreen-close') : null;
+  const prevBtn = fullscreenViewer ? fullscreenViewer.querySelector('.fullscreen-nav.prev') : null;
+  const nextBtn = fullscreenViewer ? fullscreenViewer.querySelector('.fullscreen-nav.next') : null;
+  const currentCountEl = document.getElementById('current-certificate');
+  const totalCountEl = document.getElementById('total-certificates');
+  
+  // Check if elements exist before proceeding
+  if (!fullscreenViewer || !fullscreenImg) {
+    console.error('Certificate viewer elements not found!');
+    return;
+  }
+  
+  let currentIndex = 0;
+  const certificates = Array.from(document.querySelectorAll('.certificate-image img'));
+  
+  // Update total certificate count
+  if (totalCountEl) {
+    totalCountEl.textContent = certificates.length;
+  }
+  
+  // Add click event to all certificate items
+  certificateItems.forEach((item, index) => {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      openCertificateViewer(index);
+    });
+    // Make sure cursor indicates it's clickable
+    item.style.cursor = 'pointer';
+  });
+  
+  // Function to open certificate viewer
+  function openCertificateViewer(index) {
+    currentIndex = index;
+    updateCertificateImage();
+    fullscreenViewer.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+  }
+  
+  // Function to close certificate viewer
+  function closeCertificateViewer() {
+    fullscreenViewer.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+  }
+  
+  // Function to show previous certificate
+  function showPrevCertificate() {
+    currentIndex = (currentIndex === 0) ? certificates.length - 1 : currentIndex - 1;
+    updateCertificateImage();
+  }
+  
+  // Function to show next certificate
+  function showNextCertificate() {
+    currentIndex = (currentIndex === certificates.length - 1) ? 0 : currentIndex + 1;
+    updateCertificateImage();
+  }
+  
+  // Function to update the certificate image in fullscreen viewer
+  function updateCertificateImage() {
+    // Apply fade-out effect
+    fullscreenImg.style.opacity = '0';
+    
+    setTimeout(() => {
+      // Update the image source
+      fullscreenImg.src = certificates[currentIndex].src;
+      
+      // Update the counter
+      if (currentCountEl) {
+        currentCountEl.textContent = currentIndex + 1;
+      }
+      
+      // Fade image back in
+      fullscreenImg.style.opacity = '1';
+    }, 200);
+  }
+  
+  // Event listeners for navigation
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeCertificateViewer);
+  }
+  
+  if (prevBtn) {
+    prevBtn.addEventListener('click', showPrevCertificate);
+  }
+  
+  if (nextBtn) {
+    nextBtn.addEventListener('click', showNextCertificate);
+  }
+  
+  // Close when clicking outside the image
+  fullscreenViewer.addEventListener('click', function(e) {
+    if (e.target === fullscreenViewer) {
+      closeCertificateViewer();
+    }
+  });
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (!fullscreenViewer.classList.contains('active')) return;
+    
+    if (e.key === 'Escape') {
+      closeCertificateViewer();
+    } else if (e.key === 'ArrowLeft') {
+      showPrevCertificate();
+    } else if (e.key === 'ArrowRight') {
+      showNextCertificate();
+    }
+  });
+  
+  console.log('Certificate viewer initialized');
+}
+
 // Load content sections and handle navigation
 document.addEventListener('DOMContentLoaded', function() {
   // Handle content loading
@@ -303,105 +422,4 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
-  
-  // Initialize certificate viewer functionality
-  function initCertificateViewers() {
-    console.log('Initializing certificate viewers');
-    
-    // Get all certificate images
-    const certificateItems = document.querySelectorAll('.certificate-item');
-    const fullscreenViewer = document.getElementById('certificate-fullscreen-viewer');
-    const fullscreenImg = document.getElementById('fullscreen-certificate-img');
-    const closeBtn = fullscreenViewer.querySelector('.fullscreen-close');
-    const prevBtn = fullscreenViewer.querySelector('.fullscreen-nav.prev');
-    const nextBtn = fullscreenViewer.querySelector('.fullscreen-nav.next');
-    const currentCountEl = document.getElementById('current-certificate');
-    const totalCountEl = document.getElementById('total-certificates');
-    
-    let currentIndex = 0;
-    const certificates = Array.from(document.querySelectorAll('.certificate-image img'));
-    
-    // Update total certificate count
-    totalCountEl.textContent = certificates.length;
-    
-    // Add click event to all certificate items
-    certificateItems.forEach((item, index) => {
-      item.addEventListener('click', function(e) {
-        e.preventDefault();
-        openCertificateViewer(index);
-      });
-      // Make sure cursor indicates it's clickable
-      item.style.cursor = 'pointer';
-    });
-    
-    // Function to open certificate viewer
-    function openCertificateViewer(index) {
-      currentIndex = index;
-      updateCertificateImage();
-      fullscreenViewer.classList.add('active');
-      document.body.style.overflow = 'hidden'; // Prevent scrolling
-    }
-    
-    // Function to close certificate viewer
-    function closeCertificateViewer() {
-      fullscreenViewer.classList.remove('active');
-      document.body.style.overflow = ''; // Restore scrolling
-    }
-    
-    // Function to show previous certificate
-    function showPrevCertificate() {
-      currentIndex = (currentIndex === 0) ? certificates.length - 1 : currentIndex - 1;
-      updateCertificateImage();
-    }
-    
-    // Function to show next certificate
-    function showNextCertificate() {
-      currentIndex = (currentIndex === certificates.length - 1) ? 0 : currentIndex + 1;
-      updateCertificateImage();
-    }
-    
-    // Function to update the certificate image in fullscreen viewer
-    function updateCertificateImage() {
-      // Apply fade-out effect
-      fullscreenImg.style.opacity = '0';
-      
-      setTimeout(() => {
-        // Update the image source
-        fullscreenImg.src = certificates[currentIndex].src;
-        
-        // Update the counter
-        currentCountEl.textContent = currentIndex + 1;
-        
-        // Fade image back in
-        fullscreenImg.style.opacity = '1';
-      }, 200);
-    }
-    
-    // Event listeners for navigation
-    closeBtn.addEventListener('click', closeCertificateViewer);
-    prevBtn.addEventListener('click', showPrevCertificate);
-    nextBtn.addEventListener('click', showNextCertificate);
-    
-    // Close when clicking outside the image
-    fullscreenViewer.addEventListener('click', function(e) {
-      if (e.target === fullscreenViewer) {
-        closeCertificateViewer();
-      }
-    });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-      if (!fullscreenViewer.classList.contains('active')) return;
-      
-      if (e.key === 'Escape') {
-        closeCertificateViewer();
-      } else if (e.key === 'ArrowLeft') {
-        showPrevCertificate();
-      } else if (e.key === 'ArrowRight') {
-        showNextCertificate();
-      }
-    });
-    
-    console.log('Certificate viewer initialized');
-  }
 }); 
