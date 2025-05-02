@@ -975,7 +975,7 @@ span{
   transform: rotate(6deg);
   box-sizing: border-box;
   z-index: 5;
-  margin-top: 2vh;
+  margin-top: 0vh; /* Adjusted from -2vh to 0vh to lower it slightly */
   margin-left: 75px;
   border: 1px solid #3C2A1A;
 }
@@ -1014,7 +1014,7 @@ span{
   width: 90%;
   padding: 1rem 0;
   position: absolute;
-  bottom: 0.2rem;
+  bottom: 0.2rem; /* Changed from 0.8rem to 1.2rem to move icons lower */
   left: 50%;
   transform: translateX(-50%);
   background: transparent;
@@ -1110,7 +1110,7 @@ span{
     width: 280px;
     height: 60vh;
     padding: 7rem 0.3rem 0.5rem 0.3rem;
-    margin-top: 1vh;
+    margin-top: -0.5vh; /* Adjusted from -2vh to -0.5vh to lower it slightly on mobile */
     margin-left: 15px;
   }
 
@@ -1120,7 +1120,7 @@ span{
   }
 
   .insta-actions {
-    bottom: 0rem;
+    bottom: 0.5rem; /* Changed from 0rem to 0.5rem to move icons lower on mobile */
     background: transparent;
   }
   

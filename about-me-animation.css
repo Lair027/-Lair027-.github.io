@@ -1,0 +1,1795 @@
+/* About Me Animation Styles */
+
+/* Import Nunito font */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+
+/* Base state of the home/about section */
+.home-main-content {
+  transition: all 0.6s ease-in-out;
+  position: relative;
+  overflow: visible; /* Change to visible to prevent insta-frame cutoff */
+  font-family: 'Nunito', sans-serif;
+}
+
+.home-main-content.hsr-layout {
+  position: relative;
+  overflow: visible; /* Change to visible to prevent insta-frame cutoff */
+}
+
+.home-left-content,
+.home-right-image {
+  transition: all 0.6s ease-in-out;
+  position: relative;
+}
+
+/* Fix for proper layout */
+.home-main-content .home-left-content {
+  z-index: 5;
+}
+
+.home-main-content .home-right-image {
+  transform: translateX(20px); /* Adjusted from 30px for better balance */
+  z-index: 4;
+}
+
+/* Instagram frame hover and click indicators */
+#about-me-trigger {
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+#about-me-trigger:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Add subtle pulsing glow to indicate clickability */
+#about-me-trigger:before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 20px;
+  background: radial-gradient(rgba(182, 155, 127, 0.3), transparent 70%);
+  opacity: 0;
+  z-index: -1;
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Chat bubble "Click Me" indicator */
+.chat-bubble {
+  position: absolute;
+  top: -45px;
+  right: -20px;
+  background-color: rgba(182, 155, 127, 0.9);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 18px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  z-index: 15;
+  animation: bounce 2s infinite;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.chat-bubble:after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  background-color: rgba(182, 155, 127, 0.9);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.chat-bubble i {
+  margin-right: 5px;
+}
+
+.chat-bubble.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* About Me expanded content (new design similar to reference) */
+.about-me-expanded-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(30px);
+  transition: all 0.6s ease-in-out;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* New header style for about me section */
+.about-me-header {
+  text-align: center;
+  margin-bottom: 15px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.about-me-header h2 {
+  color: #b69b7f;
+  margin-bottom: 10px;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Updated content container - changed to left/right split */
+.about-me-content-container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  justify-content: flex-end; /* Push content to the right */
+  transform: translateX(-15px); /* Offset slightly to match with the Instagram frame movement */
+}
+
+/* Left side (now empty) */
+.about-me-left {
+  flex: 0 0 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Right side with all text content */
+.about-me-right {
+  flex: 1;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  padding: 0 20px 0 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative; /* Add position relative for absolute positioning of elements */
+}
+
+/* Add decorative elements throughout the content */
+.about-me-right::before {
+  content: '';
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 2px dashed rgba(182, 155, 127, 0.2);
+  animation: slow-spin 15s linear infinite;
+  pointer-events: none;
+}
+
+.about-me-right::after {
+  content: '';
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(182, 155, 127, 0.08);
+  transform: rotate(45deg);
+  animation: float-rotate 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Mini star for each section */
+.about-me-right-section::before {
+  content: '';
+  position: absolute;
+  right: 10px;
+  margin-top: -15px;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(182, 155, 127, 0.15);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  animation: mini-twinkle 3s infinite;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+/* Random positioning for the mini stars */
+.about-me-right-section:nth-child(1)::before {
+  right: 25px;
+  animation-delay: 0.5s;
+}
+
+.about-me-right-section:nth-child(2)::before {
+  right: 45px;
+  animation-delay: 1.1s;
+}
+
+.about-me-right-section:nth-child(3)::before {
+  right: 15px;
+  animation-delay: 0.8s;
+}
+
+.about-me-right-section:nth-child(4)::before {
+  right: 60px;
+  animation-delay: 1.7s;
+}
+
+.about-me-right-section:nth-child(5)::before {
+  right: 30px;
+  animation-delay: 1.3s;
+}
+
+/* Specialty section background accent */
+.about-me-specialties {
+  position: relative;
+}
+
+.about-me-specialties::before {
+  content: '';
+  position: absolute;
+  top: -25px;
+  left: -25px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(182, 155, 127, 0.08) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Goals section accent */
+.about-me-goals {
+  position: relative;
+}
+
+.about-me-goals::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, rgba(182, 155, 127, 0.08) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Traits section accent */
+.about-me-traits {
+  position: relative;
+}
+
+.about-me-traits::before {
+  content: '';
+  position: absolute;
+  top: 30%;
+  right: -30px;
+  width: 15px;
+  height: 15px;
+  background: rgba(182, 155, 127, 0.1);
+  transform: rotate(45deg);
+  z-index: -1;
+  animation: pulse-fade 4s infinite;
+  pointer-events: none;
+}
+
+/* Interests section accent */
+.about-me-interests {
+  position: relative;
+}
+
+.about-me-interests::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 20%;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(182, 155, 127, 0.2), transparent);
+  pointer-events: none;
+}
+
+/* Floating dots in the right side */
+.about-me-right-section {
+  position: relative;
+}
+
+.about-me-right-section:nth-child(2n)::after {
+  content: '';
+  position: absolute;
+  right: -15px;
+  top: 40%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: rgba(182, 155, 127, 0.2);
+  animation: float-y 4s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.about-me-right-section:nth-child(2n+1)::after {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 30%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: rgba(182, 155, 127, 0.15);
+  animation: float-y 3s infinite ease-in-out;
+  animation-delay: 1s;
+  pointer-events: none;
+}
+
+/* Additional animations */
+@keyframes slow-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes float-rotate {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); }
+  50% { transform: rotate(60deg) translate(5px, -5px); }
+}
+
+@keyframes mini-twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.2); }
+}
+
+@keyframes pulse-fade {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Custom Scrollbar */
+.about-me-right::-webkit-scrollbar {
+  width: 8px;
+}
+
+.about-me-right::-webkit-scrollbar-track {
+  background: rgba(182, 155, 127, 0.05);
+  border-radius: 10px;
+}
+
+.about-me-right::-webkit-scrollbar-thumb {
+  background: rgba(182, 155, 127, 0.5);
+  border-radius: 10px;
+}
+
+.about-me-right::-webkit-scrollbar-thumb:hover {
+  background: rgba(182, 155, 127, 0.7);
+}
+
+.about-me-section-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 15px 0;
+  color: rgba(182, 155, 127, 0.9);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.about-me-bio {
+  margin-bottom: 10px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.about-me-contact-item {
+  margin-bottom: 10px;
+}
+
+/* About Me Icon Styles */
+.about-me-interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Reduced from 20px to allow more items per row */
+  margin-top: 15px;
+  justify-content: flex-start; /* Ensure items start from the left */
+  width: 100%; /* Ensure it takes full width available */
+}
+
+.interest-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 12px; /* Reduced from 15px */
+  width: 70px; /* Reduced from 80px */
+  max-width: calc(20% - 15px); /* Ensure it can adapt to container width */
+  transition: all 0.3s ease;
+}
+
+.interest-item i {
+  font-size: 22px; /* Reduced from 24px */
+  margin-bottom: 6px; /* Reduced from 8px */
+  color: #b69b7f;
+}
+
+.interest-item span {
+  font-size: 13px; /* Reduced from 14px */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%; /* Ensure text can be truncated if needed */
+}
+
+.interest-item:hover {
+  transform: translateY(-5px);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* About Me Content Styles */
+.about-me-info {
+  margin-bottom: 8px;
+}
+
+.about-me-info h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+  color: rgba(182, 155, 127, 0.8);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.about-me-info p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.about-me-right-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 15px 0;
+  color: rgba(182, 155, 127, 0.9);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* State when animation is activated */
+.home-main-content.about-me-active .home-left-content {
+  opacity: 0;
+  transform: translateX(-100%);
+  z-index: 1;
+}
+
+.home-main-content.about-me-active .home-right-image {
+  transform: translateX(-100%) scale(0.85) translateX(20px); /* Adjusted from 30px */
+  width: 40%;
+  z-index: 2;
+}
+
+.home-main-content.about-me-active .background-streak {
+  transform: scaleX(0.7);
+}
+
+.home-main-content.about-me-active .about-me-expanded-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  z-index: 5;
+}
+
+/* Animation keyframes for smoother transitions */
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(30px);
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@keyframes slideOutToLeft {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+/* Apply animations */
+.home-main-content.about-me-active .about-me-expanded-content {
+  animation: slideInFromRight 0.6s forwards;
+}
+
+.home-main-content.about-me-active .home-left-content {
+  animation: slideOutToLeft 0.6s forwards;
+}
+
+/* Hide chat bubble when active */
+.home-main-content.about-me-active .chat-bubble {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Back button for the expanded view */
+.about-me-expanded-content .back-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: rgba(182, 155, 127, 0.9);
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(-10px);
+  z-index: 10;
+}
+
+.home-main-content.about-me-active .about-me-expanded-content .back-button {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-me-expanded-content .back-button:hover {
+  background-color: #b69b7f;
+  transform: scale(1.1);
+}
+
+/* Fix insta-frame display to prevent cutoff */
+.insta-frame {
+  margin-bottom: 55px; /* Increased from 40px to 55px for better spacing at the bottom */
+}
+
+/* Style for section dividers */
+.section-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(to right, transparent, #b69b7f, transparent);
+  margin: 0 auto 20px auto;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .home-right-image {
+    transform: translateX(15px); /* Less movement on smaller screens */
+  }
+  
+  .home-main-content.about-me-active .home-right-image {
+    transform: translateX(-70%) translateX(15px); /* Adjust for smaller screens */
+    width: 40%;
+  }
+  
+  .about-me-content-container {
+    flex-direction: column;
+  }
+  
+  .about-me-left {
+    display: none; /* Hide left side completely on mobile */
+  }
+  
+  .about-me-right {
+    flex: 1;
+    width: 100%;
+    padding: 0 15px;
+    max-height: 80vh;
+  }
+  
+  .about-me-interests {
+    gap: 10px; /* Reduced from 15px for mobile */
+    justify-content: center; /* Center the items on mobile */
+  }
+  
+  .interest-item {
+    width: 60px; /* Reduced from 65px for mobile */
+    padding: 10px; /* Reduced from 12px for mobile */
+    max-width: calc(25% - 10px); /* Adjust for mobile */
+  }
+  
+  .interest-item i {
+    font-size: 18px; /* Reduced from 20px for mobile */
+    margin-bottom: 4px; /* Reduced for mobile */
+  }
+  
+  .interest-item span {
+    font-size: 11px; /* Reduced from 12px for mobile */
+  }
+  
+  .chat-bubble {
+    top: -40px;
+    right: -10px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+/* Add this for smaller screens to ensure no horizontal scrolling */
+@media (max-width: 420px) {
+  .about-me-right {
+    padding: 0 15px 0 15px; /* Reduce padding on very small screens */
+  }
+  
+  .interest-item {
+    width: 50px; /* Even smaller for very small screens */
+    max-width: calc(33.33% - 10px); /* 3 items per row on very small screens */
+  }
+}
+
+/* Background elements for the About Me section */
+.about-me-bg-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.about-me-circle {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(182, 155, 127, 0.05) 0%, rgba(182, 155, 127, 0.02) 70%, transparent 100%);
+}
+
+.about-me-circle.top-right {
+  top: -100px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+}
+
+.about-me-circle.bottom-left {
+  bottom: -100px;
+  left: -100px;
+  width: 400px;
+  height: 400px;
+}
+
+.about-me-dots {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  opacity: 0.15;
+}
+
+.about-me-dots::before,
+.about-me-dots::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #b69b7f;
+}
+
+.about-me-dots::before {
+  top: 40%;
+  left: 30%;
+}
+
+.about-me-dots::after {
+  top: 60%;
+  left: 70%;
+}
+
+.about-me-dots.mid-right {
+  top: 50%;
+  right: 10%;
+  transform: rotate(25deg);
+}
+
+.about-me-dots.bottom-left {
+  bottom: 10%;
+  left: 20%;
+  transform: rotate(-15deg);
+}
+
+/* Specialty Section Styles */
+.about-me-specialties {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.specialty-item {
+  display: flex;
+  align-items: flex-start;
+  background-color: rgba(182, 155, 127, 0.05);
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.specialty-item:hover {
+  transform: translateY(-3px);
+  background-color: rgba(182, 155, 127, 0.1);
+}
+
+.specialty-item i {
+  color: #b69b7f;
+  font-size: 24px;
+  margin-right: 15px;
+  margin-top: 5px;
+}
+
+.specialty-text {
+  flex: 1;
+}
+
+.specialty-text h4 {
+  margin: 0 0 5px 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: rgba(182, 155, 127, 0.9);
+}
+
+.specialty-text p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* Goals Section Styles */
+.about-me-goals {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.goal-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 5px 0;
+}
+
+.goal-item i {
+  color: #b69b7f;
+  font-size: 20px;
+  margin-right: 15px;
+  margin-top: 2px;
+}
+
+.goal-item p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  flex: 1;
+}
+
+/* Traits Section Styles */
+.about-me-traits {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trait-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 5px 0;
+}
+
+.trait-item i {
+  color: #b69b7f;
+  font-size: 18px;
+  margin-right: 15px;
+  margin-top: 3px;
+}
+
+.trait-item p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  flex: 1;
+}
+
+/* Enhanced Interests Section */
+.about-me-interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.interest-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 15px;
+  width: 80px;
+  transition: all 0.3s ease;
+}
+
+.interest-item i {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #b69b7f;
+}
+
+.interest-item:hover {
+  transform: translateY(-5px);
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 5px 15px rgba(182, 155, 127, 0.1);
+}
+
+.interest-item span {
+  font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .specialty-item, .goal-item, .trait-item {
+    padding: 12px;
+  }
+  
+  .specialty-item i {
+    font-size: 20px;
+  }
+  
+  .specialty-text h4 {
+    font-size: 16px;
+  }
+  
+  .specialty-text p, .goal-item p, .trait-item p {
+    font-size: 14px;
+  }
+  
+  .interest-item {
+    width: 65px;
+    padding: 12px;
+  }
+  
+  .interest-item i {
+    font-size: 20px;
+  }
+  
+  .interest-item span {
+    font-size: 12px;
+  }
+}
+
+/* Content sections in the right panel */
+.about-me-right-section {
+  margin-bottom: 15px;
+}
+
+/* Section Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.about-me-right-section {
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.about-me-right-section:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.about-me-right-section:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.about-me-right-section:nth-child(3) {
+  animation-delay: 0.3s;
+  margin-top: 5px;
+}
+
+.about-me-right-section:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.about-me-right-section:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.about-me-right-section:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+/* Specialty Item Animations */
+.specialty-item {
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.specialty-item:hover {
+  transform: translateY(-3px);
+  background-color: rgba(182, 155, 127, 0.12);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-height: 800px) {
+  .about-me-right {
+    max-height: 65vh;
+  }
+  
+  .about-me-expanded-content {
+    max-height: 90vh;
+  }
+}
+
+/* Additional decorative elements for About Me section */
+.about-me-star {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  opacity: 0.3;
+}
+
+.about-me-star::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #b69b7f;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+.about-me-star.top-right {
+  top: 10%;
+  right: 15%;
+  transform: rotate(15deg);
+  animation-delay: 0.5s;
+}
+
+.about-me-star.mid-left {
+  top: 40%;
+  left: 15%;
+  transform: rotate(-10deg) scale(0.7);
+  animation-delay: 1s;
+}
+
+.about-me-star.bottom-right {
+  bottom: 15%;
+  right: 20%;
+  transform: rotate(25deg) scale(0.9);
+  animation-delay: 2s;
+}
+
+/* Add animated floating circles */
+.about-me-floating-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(182, 155, 127, 0.2);
+  animation: float-animation 10s infinite ease-in-out;
+}
+
+.about-me-floating-circle.one {
+  width: 70px;
+  height: 70px;
+  top: 25%;
+  right: 30%;
+  animation-duration: 12s;
+}
+
+.about-me-floating-circle.two {
+  width: 40px;
+  height: 40px;
+  bottom: 30%;
+  left: 25%;
+  animation-duration: 8s;
+  animation-delay: 2s;
+}
+
+.about-me-floating-circle.three {
+  width: 55px;
+  height: 55px;
+  top: 60%;
+  right: 15%;
+  animation-duration: 15s;
+  animation-delay: 1s;
+}
+
+/* Add small animated dots cluster */
+.about-me-small-dots {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+}
+
+.about-me-small-dots::before,
+.about-me-small-dots::after,
+.about-me-small-dots span::before,
+.about-me-small-dots span::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(182, 155, 127, 0.35);
+  animation: dot-pulse 3s infinite ease-in-out;
+}
+
+.about-me-small-dots::before {
+  top: 10%;
+  left: 30%;
+  animation-delay: 0.2s;
+}
+
+.about-me-small-dots::after {
+  top: 60%;
+  left: 70%;
+  animation-delay: 1.2s;
+}
+
+.about-me-small-dots span::before {
+  top: 40%;
+  left: 20%;
+  animation-delay: 0.8s;
+}
+
+.about-me-small-dots span::after {
+  top: 70%;
+  left: 40%;
+  animation-delay: 1.5s;
+}
+
+.about-me-small-dots.top-right {
+  top: 15%;
+  right: 5%;
+}
+
+.about-me-small-dots.bottom-left {
+  bottom: 10%;
+  left: 15%;
+}
+
+/* Add diagonal line accents */
+.about-me-diagonal {
+  position: absolute;
+  width: 100px;
+  height: 1px;
+  background-color: rgba(182, 155, 127, 0.2);
+  transform: rotate(-45deg);
+}
+
+.about-me-diagonal.top-left {
+  top: 20%;
+  left: 10%;
+}
+
+.about-me-diagonal.bottom-right {
+  bottom: 15%;
+  right: 5%;
+  transform: rotate(45deg);
+}
+
+/* Add animations for the elements */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+@keyframes float-animation {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(10px, -15px) rotate(5deg); }
+  50% { transform: translate(-5px, 10px) rotate(10deg); }
+  75% { transform: translate(-10px, -5px) rotate(5deg); }
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.3); }
+}
+
+/* Enhanced Instagram frame click indicators */
+/* Add a "tap me" button indicator */
+.tap-indicator {
+  position: absolute;
+  bottom: -8px;
+  right: 20px;
+  background-color: rgba(182, 155, 127, 0.9);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  animation: pulse-animation 1.5s infinite ease-in-out;
+  z-index: 15;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.tap-indicator i {
+  margin-right: 5px;
+  animation: tap-icon 1s infinite;
+}
+
+.tap-indicator.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Animated corner highlights on Instagram frame */
+#about-me-trigger::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 15px;
+  height: 15px;
+  border-top: 3px solid rgba(182, 155, 127, 0.8);
+  border-left: 3px solid rgba(182, 155, 127, 0.8);
+  border-radius: 3px 0 0 0;
+  opacity: 0;
+  animation: corner-highlight 3s infinite;
+}
+
+#about-me-trigger .corner-highlight {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 15px;
+  height: 15px;
+  border-bottom: 3px solid rgba(182, 155, 127, 0.8);
+  border-right: 3px solid rgba(182, 155, 127, 0.8);
+  border-radius: 0 0 3px 0;
+  opacity: 0;
+  animation: corner-highlight 3s infinite 1.5s;
+}
+
+@keyframes pulse-animation {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes tap-icon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes corner-highlight {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* Additional decorative elements */
+.about-me-shimmer {
+  position: absolute;
+  width: 150px;
+  height: 2px;
+  top: 35%;
+  right: 15%;
+  background: linear-gradient(90deg, transparent, rgba(182, 155, 127, 0.4), transparent);
+  transform: rotate(-30deg);
+  opacity: 0;
+  animation: shimmer 4s infinite;
+}
+
+.about-me-shimmer.second {
+  top: 65%;
+  left: 25%;
+  width: 100px;
+  transform: rotate(20deg);
+  animation-delay: 2s;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0; width: 0; }
+  50% { opacity: 0.4; width: 150px; }
+}
+
+/* Decorative polygon shapes */
+.about-me-polygons {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.about-me-polygons .polygon {
+  position: absolute;
+  opacity: 0.1;
+  border: 1px solid rgba(182, 155, 127, 0.5);
+  animation: polygon-rotate 20s infinite linear;
+}
+
+.about-me-polygons .polygon.one {
+  width: 40px;
+  height: 40px;
+  top: 20%;
+  left: 20%;
+  transform: rotate(45deg);
+  animation-duration: 25s;
+}
+
+.about-me-polygons .polygon.two {
+  width: 60px;
+  height: 30px;
+  bottom: 25%;
+  right: 10%;
+  transform: rotate(10deg);
+  animation-duration: 30s;
+}
+
+.about-me-polygons .polygon.three {
+  width: 25px;
+  height: 25px;
+  top: 70%;
+  left: 40%;
+  border-radius: 2px;
+  animation-duration: 20s;
+}
+
+@keyframes polygon-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Animated particles */
+.about-me-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.about-me-particles span {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background-color: rgba(182, 155, 127, 0.3);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particle-fade 5s infinite;
+}
+
+.about-me-particles span:nth-child(1) {
+  top: 15%;
+  left: 30%;
+  animation-delay: 0.5s;
+}
+
+.about-me-particles span:nth-child(2) {
+  top: 25%;
+  right: 40%;
+  animation-delay: 1.5s;
+}
+
+.about-me-particles span:nth-child(3) {
+  bottom: 40%;
+  left: 20%;
+  animation-delay: 2.5s;
+}
+
+.about-me-particles span:nth-child(4) {
+  bottom: 20%;
+  right: 25%;
+  animation-delay: 3.5s;
+}
+
+.about-me-particles span:nth-child(5) {
+  top: 60%;
+  left: 45%;
+  animation-delay: 1s;
+}
+
+.about-me-particles span:nth-child(6) {
+  top: 75%;
+  right: 15%;
+  animation-delay: 2s;
+}
+
+@keyframes particle-fade {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+
+/* Decorative dashed circle */
+.about-me-dashed-circle {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px dashed rgba(182, 155, 127, 0.2);
+  top: 80%;
+  left: 10%;
+  animation: slow-spin-reverse 25s infinite linear;
+}
+
+@keyframes slow-spin-reverse {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+/* Instagram Frame Decorative Elements */
+.insta-frame-decorations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1; /* Between background and content */
+}
+
+/* Circular elements with darker browns */
+.insta-frame-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(94, 70, 47, 0.15) 0%, rgba(60, 42, 26, 0.25) 100%);
+  opacity: 0.7;
+  animation: slow-float 20s infinite ease-in-out alternate;
+}
+
+.insta-frame-circle.one {
+  width: 120px;
+  height: 120px;
+  top: 15%;
+  left: -30px;
+  animation-delay: 2s;
+}
+
+.insta-frame-circle.two {
+  width: 90px;
+  height: 90px;
+  bottom: 20%;
+  right: -25px;
+  background: radial-gradient(circle, rgba(94, 70, 47, 0.2) 0%, rgba(60, 42, 26, 0.25) 70%);
+  animation-duration: 15s;
+}
+
+/* Dotted pattern */
+.insta-frame-dots {
+  position: absolute;
+  top: 10%;
+  right: 15%;
+  width: 100px;
+  height: 100px;
+  background-image: radial-gradient(rgba(60, 42, 26, 0.3) 2px, transparent 2px);
+  background-size: 12px 12px;
+  opacity: 0.5;
+  transform: rotate(15deg);
+}
+
+/* Star elements */
+.insta-frame-star {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  opacity: 0.35;
+}
+
+.insta-frame-star::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #3C2A1A;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  animation: slow-twinkle 4s infinite ease-in-out;
+}
+
+.insta-frame-star.one {
+  top: 32%;
+  left: 12%;
+  transform: rotate(-10deg);
+  animation-delay: 1s;
+}
+
+.insta-frame-star.two {
+  bottom: 15%;
+  right: 18%;
+  transform: rotate(15deg) scale(0.8);
+  animation-delay: 0.5s;
+}
+
+/* Polygon element */
+.insta-frame-polygon {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  bottom: 25%;
+  left: 10%;
+  background: rgba(112, 90, 71, 0.12);
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  transform: rotate(15deg);
+  animation: slow-rotate 30s linear infinite;
+  opacity: 0.7;
+}
+
+/* Triangle */
+.insta-frame-triangle {
+  position: absolute;
+  top: 10%;
+  right: 25%;
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 45px solid rgba(94, 70, 47, 0.1);
+  opacity: 0.8;
+  transform: rotate(-15deg);
+  animation: slow-float 18s infinite ease-in-out alternate;
+}
+
+/* Diagonal line */
+.insta-frame-diagonal {
+  position: absolute;
+  width: 150px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(60, 42, 26, 0.2), transparent);
+  top: 70%;
+  left: -20px;
+  transform: rotate(-25deg);
+  opacity: 0.8;
+}
+
+/* Dashed rotating circle */
+.insta-frame-dashed-circle {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  bottom: 10%;
+  right: 30%;
+  border: 2px dashed rgba(94, 70, 47, 0.15);
+  border-radius: 50%;
+  animation: slow-rotate-reverse 40s linear infinite;
+  opacity: 0.8;
+}
+
+/* Shimmer effect */
+.insta-frame-shimmer {
+  position: absolute;
+  width: 150px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(94, 70, 47, 0.4), transparent);
+  top: 45%;
+  left: -50px;
+  transform: rotate(35deg);
+  animation: shimmer-move 8s infinite ease-in-out;
+  opacity: 0.5;
+}
+
+/* Floating particles */
+.insta-frame-floating-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.insta-frame-floating-particles span {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: rgba(60, 42, 26, 0.5);
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(60, 42, 26, 0.3);
+  animation: particle-float 15s infinite ease-in-out;
+}
+
+.insta-frame-floating-particles span:nth-child(1) {
+  top: 20%;
+  left: 25%;
+  animation-delay: 0s;
+}
+
+.insta-frame-floating-particles span:nth-child(2) {
+  top: 65%;
+  left: 15%;
+  animation-delay: 3s;
+}
+
+.insta-frame-floating-particles span:nth-child(3) {
+  top: 45%;
+  right: 20%;
+  animation-delay: 1.5s;
+}
+
+.insta-frame-floating-particles span:nth-child(4) {
+  bottom: 30%;
+  right: 35%;
+  animation-delay: 4s;
+}
+
+/* Animations for Instagram frame decorations */
+@keyframes slow-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes slow-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slow-rotate-reverse {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes slow-twinkle {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes shimmer-move {
+  0%, 100% {
+    opacity: 0.3;
+    transform: rotate(35deg) translateX(0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: rotate(35deg) translateX(100px);
+  }
+}
+
+@keyframes particle-float {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(15px, 10px);
+  }
+  50% {
+    transform: translate(5px, 20px);
+  }
+  75% {
+    transform: translate(-10px, 5px);
+  }
+}
+
+/* Make sure all decorative elements have pointer-events set to none */
+.insta-frame-decorations * {
+  pointer-events: none;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .insta-frame-circle.one {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .insta-frame-circle.two {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .insta-frame-polygon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .insta-frame-triangle {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 30px solid rgba(94, 70, 47, 0.1);
+  }
+  
+  .insta-frame-dashed-circle {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Additional darker brown decorative elements */
+/* Textured background overlay */
+.insta-frame-decorations::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z' fill='rgba(94, 70, 47, 0.05)' fill-rule='evenodd'/%3E%3C/svg%3E");
+  opacity: 0.7;
+  z-index: 0;
+}
+
+/* Rich brown gradient splashes */
+.insta-frame-decorations::after {
+  content: '';
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(94, 70, 47, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.8;
+  z-index: 0;
+}
+
+/* Corner wood grain pattern */
+.insta-frame-wood-grain {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 150px;
+  height: 150px;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(94, 70, 47, 0.05) 0px,
+    rgba(94, 70, 47, 0.05) 2px,
+    rgba(112, 90, 71, 0.07) 2px,
+    rgba(112, 90, 71, 0.07) 4px
+  );
+  border-bottom-left-radius: inherit;
+  opacity: 0.8;
+  clip-path: polygon(0 50%, 100% 100%, 0 100%);
+}
+
+/* Brushstroke effect */
+.insta-frame-brushstroke {
+  position: absolute;
+  top: 55%;
+  right: -10px;
+  width: 80px;
+  height: 15px;
+  background-color: rgba(112, 90, 71, 0.15);
+  border-radius: 10px;
+  transform: rotate(-30deg);
+  box-shadow: 0 0 0 5px rgba(112, 90, 71, 0.07);
+  opacity: 0.8;
+}
+
+/* Dark accent corners */
+.insta-frame-corner {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(60, 42, 26, 0.08);
+}
+
+.insta-frame-corner.top-right {
+  top: 0;
+  right: 0;
+  border-bottom-left-radius: 100%;
+}
+
+.insta-frame-corner.bottom-left {
+  bottom: 0;
+  left: 0;
+  border-top-right-radius: 100%;
+}
+
+/* Additional responsive adjustments */
+@media (max-width: 768px) {
+  .insta-frame-wood-grain {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .insta-frame-brushstroke {
+    width: 60px;
+    height: 10px;
+  }
+  
+  .insta-frame-corner {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Make sure z-index values are properly set for image container to stay on top */
+.image-container {
+  z-index: 6; /* Keep this higher than decorative elements */
+}
+
+.insta-frame-decorations {
+  z-index: 2; /* Lower than image-container but higher than background */
+}
+
+/* Adjust opacity for better visibility without being too distracting */
+.insta-frame-circle {
+  opacity: 0.7; /* Slightly more visible */
+}
+
+.insta-frame-dots {
+  opacity: 0.5; /* Slightly less dominant */
+}
+
+.insta-frame-star::before {
+  background: #3C2A1A; /* Darker brown for stars */
+}
+
+/* Ensure decorative elements don't block the profile picture or tap indicator */
+.home-profile-thumb {
+  z-index: 10; /* Stay on top of all decorative elements */
+}
+
+.chat-bubble, 
+.tap-indicator {
+  z-index: 15; /* Always on top */
+}
+
+/* Increase contrast for the floating particles to make them more noticeable */
+.insta-frame-floating-particles span {
+  background-color: rgba(60, 42, 26, 0.5); /* Darker and more opaque */
+  width: 5px;
+  height: 5px;
+  box-shadow: 0 0 5px rgba(60, 42, 26, 0.3); /* Add subtle glow */
+} 

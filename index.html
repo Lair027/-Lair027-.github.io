@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="custom-fixes.css">
+    <link rel="stylesheet" href="about-me-animation.css">
+    <link rel="stylesheet" href="projects-decorations.css">
     <!-- Certificate viewer scripts are disabled and replaced with fix-certificate-viewer.js -->
     <!--<link rel="stylesheet" href="certificate-viewer.css">-->
     <!--<script src="certificate-viewer.js"></script>-->
@@ -65,13 +67,104 @@
     
     <!-- Include the certificate viewer fix script at the top -->
     <script src="fix-certificate-viewer.js"></script>
+    
+    <!-- Add global function for About Me trigger -->
+    <script>
+        // Track if the user has already clicked the About Me trigger in current session
+        let hasClickedAboutMe = false;
+        
+        function triggerAboutMe(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            console.log('Instagram frame clicked via inline handler!');
+            
+            const mainContent = document.querySelector('.home-main-content');
+            const chatBubble = document.querySelector('.chat-bubble');
+            const tapIndicator = document.querySelector('.tap-indicator');
+            
+            if (mainContent) {
+                mainContent.classList.add('about-me-active');
+                console.log('Added about-me-active class via inline handler');
+                
+                // Hide the indicators when the About Me section is active
+                if (chatBubble) {
+                    chatBubble.classList.add('hidden');
+                }
+                if (tapIndicator) {
+                    tapIndicator.classList.add('hidden');
+                }
+            } else {
+                console.error('Main content element not found in inline handler');
+            }
+        }
+        
+        function closeAboutMe(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            console.log('Back button clicked via inline handler!');
+            
+            const mainContent = document.querySelector('.home-main-content');
+            if (mainContent) {
+                mainContent.classList.remove('about-me-active');
+                console.log('Removed about-me-active class via inline handler');
+                
+                // Show the indicators again when closing the About Me section
+                setTimeout(() => {
+                    const chatBubble = document.querySelector('.chat-bubble');
+                    const tapIndicator = document.querySelector('.tap-indicator');
+                    if (chatBubble) {
+                        chatBubble.classList.remove('hidden');
+                    }
+                    if (tapIndicator) {
+                        tapIndicator.classList.remove('hidden');
+                    }
+                }, 300); // Small delay to ensure the animation completes first
+            } else {
+                console.error('Main content element not found in inline handler');
+            }
+        }
+        
+        // Add document click handler for outside clicks
+        document.addEventListener('DOMContentLoaded', function() {
+            // No longer check localStorage - we want the indicators to always be visible initially
+            
+            document.addEventListener('click', function(event) {
+                const mainContent = document.querySelector('.home-main-content');
+                const instaTrigger = document.getElementById('about-me-trigger');
+                
+                if (!mainContent || !instaTrigger) return;
+                
+                // Check if click is inside the insta frame or about-me-expanded-content
+                const isClickInside = instaTrigger.contains(event.target) || 
+                                     event.target.closest('.about-me-expanded-content');
+                
+                // If clicking outside and animation is active, close it
+                if (!isClickInside && mainContent.classList.contains('about-me-active')) {
+                    console.log('Clicked outside, closing expanded content (global handler)');
+                    mainContent.classList.remove('about-me-active');
+                    
+                    // Show the indicators again when closing the About Me section
+                    setTimeout(() => {
+                        const chatBubble = document.querySelector('.chat-bubble');
+                        const tapIndicator = document.querySelector('.tap-indicator');
+                        if (chatBubble) {
+                            chatBubble.classList.remove('hidden');
+                        }
+                        if (tapIndicator) {
+                            tapIndicator.classList.remove('hidden');
+                        }
+                    }, 300); // Small delay to ensure the animation completes first
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <header>
         <a href="#" class="logo">Laira</a>
 
         <nav>
-            <a href="#home-content" class="nav-link active" data-section="home">Home</a>
+            <a href="#home-content" class="nav-link active" data-section="home">About Me</a>
             <a href="#education" class="nav-link" data-section="education">Education</a>
             <a href="#projects" class="nav-link" data-section="projects">Projects</a>
             <a href="#certificates" class="nav-link" data-section="certificates">Certificates</a>
@@ -97,7 +190,7 @@
         <div class="fullscreen-nav next"><i class="fas fa-chevron-right"></i></div>
         <img src="" alt="" class="fullscreen-image">
         <div class="fullscreen-counter">1 / 10</div>
-    </div>
+                </div>
 
     <script>
         // Certificate viewer functionality has been moved to certificate-viewer.js
@@ -109,6 +202,8 @@
                 document.getElementById('home-content').innerHTML = data;
                 // Add event listeners after content is loaded
                 setupInstaActions();
+                // Set up About Me animation
+                setupAboutMeAnimation();
             });
 
         fetch('components/education.html')
@@ -1525,6 +1620,111 @@
                 }
             }
         });
+
+        // Add About Me Animation setup
+        function setupAboutMeAnimation() {
+            console.log('Setting up About Me animation');
+            
+            // Wait a short time to ensure elements are fully loaded
+            setTimeout(() => {
+                const instaTrigger = document.getElementById('about-me-trigger');
+                const mainContent = document.querySelector('.home-main-content');
+                const backButton = document.querySelector('.about-me-expanded-content .back-button');
+                const chatBubble = document.querySelector('.chat-bubble');
+                const tapIndicator = document.querySelector('.tap-indicator');
+                
+                console.log('Elements found:', {
+                    instaTrigger: !!instaTrigger,
+                    mainContent: !!mainContent,
+                    backButton: !!backButton,
+                    chatBubble: !!chatBubble,
+                    tapIndicator: !!tapIndicator
+                });
+                
+                // Check if user has previously clicked, hide chat bubble and tap indicator if so
+                if (chatBubble && hasClickedAboutMe) {
+                    chatBubble.classList.add('hidden');
+                    tapIndicator.classList.add('hidden');
+                }
+                
+                if (instaTrigger && mainContent) {
+                    console.log('Adding click event to Instagram frame');
+                    
+                    // Remove any existing click handlers to avoid duplicates
+                    instaTrigger.removeEventListener('click', handleInstaClick);
+                    
+                    // Add click handler
+                    instaTrigger.addEventListener('click', handleInstaClick);
+                    
+                    // Function to handle clicks on the Instagram frame
+                    function handleInstaClick(e) {
+                        console.log('Instagram frame clicked!');
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Apply the animation class to the main content
+                        mainContent.classList.add('about-me-active');
+                        console.log('Added about-me-active class to mainContent:', mainContent);
+                        console.log('Current classes on mainContent:', mainContent.className);
+                        
+                        // Hide the chat bubble and tap indicator and mark as clicked
+                        if (chatBubble && !hasClickedAboutMe) {
+                            chatBubble.classList.add('hidden');
+                            tapIndicator.classList.add('hidden');
+                            hasClickedAboutMe = true;
+                            
+                            // Store in localStorage
+                            try {
+                                localStorage.setItem('hasClickedAboutMe', 'true');
+                            } catch (e) {
+                                console.log('Unable to save click state', e);
+                            }
+                        }
+                    }
+                    
+                    // Add back button functionality
+                    if (backButton) {
+                        console.log('Adding click event to back button');
+                        
+                        // Remove any existing click handlers to avoid duplicates
+                        backButton.removeEventListener('click', handleBackClick);
+                        
+                        // Add click handler
+                        backButton.addEventListener('click', handleBackClick);
+                        
+                        // Function to handle clicks on the back button
+                        function handleBackClick(e) {
+                            console.log('Back button clicked!');
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            // Remove the animation class
+                            mainContent.classList.remove('about-me-active');
+                            console.log('Removed about-me-active class from mainContent');
+                        }
+                    }
+                    
+                    // Add click outside to close
+                    document.removeEventListener('click', handleOutsideClick);
+                    document.addEventListener('click', handleOutsideClick);
+                    
+                    function handleOutsideClick(event) {
+                        // Check if click is inside the trigger or expanded content
+                        const isClickInside = instaTrigger.contains(event.target) || 
+                                             event.target.closest('.about-me-expanded-content');
+                        
+                        // If clicking outside and animation is active, close it
+                        if (!isClickInside && mainContent.classList.contains('about-me-active')) {
+                            console.log('Clicked outside, closing expanded content');
+                            mainContent.classList.remove('about-me-active');
+                        }
+                    }
+                } else {
+                    console.error('Required elements for About Me animation not found!');
+                    console.log('DOM structure:', document.body.innerHTML);
+                }
+            }, 500); // Short delay to ensure elements are loaded
+        }
     </script>
 </body>
 </html>
