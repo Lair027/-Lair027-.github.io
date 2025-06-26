@@ -244,10 +244,10 @@
           </div>
           <!-- Video preview for Duel Learn -->
           <div class="modal-main-video" style="position:relative; margin: 18px 0 10px 0; border-radius: 14px; overflow: hidden; border: 3px solid #8AA8BF; box-shadow: 0 0 16px 0 rgba(138,168,191,0.18); max-width: 480px; margin-left:auto; margin-right:auto;">
-            <video src="projects/duel-learn/2025-05-22 01-00-51.mp4" controls poster="projects/duel-learn/duel-learn-main.png" style="width:100%; display:block; background:#222;">
+            <video class="duel-learn-video" src="projects/duel-learn/2025-05-22 01-00-51.mp4" controls poster="projects/duel-learn/duel-learn-main.png" style="width:100%; display:block; background:#222;">
               Your browser does not support the video tag.
             </video>
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;">
+            <div class="duel-learn-play-overlay" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;">
               <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="32" cy="32" r="32" fill="rgba(0,0,0,0.35)"/>
                 <polygon points="26,20 48,32 26,44" fill="#fff"/>
@@ -614,4 +614,25 @@
     <div class="fullscreen-nav next"><i class="fas fa-chevron-right"></i></div>
     <div class="fullscreen-counter"><span id="current-image">1</span> / <span id="total-images">10</span></div>
   </div>
-</section> 
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var video = document.querySelector('.duel-learn-video');
+  var overlay = document.querySelector('.duel-learn-play-overlay');
+  if (video && overlay) {
+    function updateOverlay() {
+      if (video.paused) {
+        overlay.style.display = '';
+      } else {
+        overlay.style.display = 'none';
+      }
+    }
+    video.addEventListener('play', updateOverlay);
+    video.addEventListener('pause', updateOverlay);
+    video.addEventListener('ended', updateOverlay);
+    // Initial state
+    updateOverlay();
+  }
+});
+</script> 
