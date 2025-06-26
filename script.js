@@ -431,16 +431,34 @@ function setupDuelLearnVideoOverlay() {
   const video = duelModal.querySelector('.duel-learn-video');
   const overlay = duelModal.querySelector('.duel-learn-play-overlay');
   if (video && overlay) {
+    function hideOverlay() {
+      overlay.style.display = 'none';
+    }
+    function showOverlay() {
+      overlay.style.display = '';
+    }
     function updateOverlay() {
       if (video.paused) {
-        overlay.style.display = '';
+        showOverlay();
       } else {
-        overlay.style.display = 'none';
+        hideOverlay();
       }
     }
-    video.addEventListener('play', updateOverlay);
-    video.addEventListener('pause', updateOverlay);
-    video.addEventListener('ended', updateOverlay);
+    // Remove previous listeners
+    video.onplay = null;
+    video.onpause = null;
+    video.onended = null;
+    video.onclick = null;
+    video.onplaying = null;
+    // Add listeners
+    video.addEventListener('play', hideOverlay);
+    video.addEventListener('playing', hideOverlay);
+    video.addEventListener('pause', showOverlay);
+    video.addEventListener('ended', showOverlay);
+    video.addEventListener('click', function() {
+      // Hide overlay immediately on click (in case play event is delayed)
+      setTimeout(hideOverlay, 10);
+    });
     // Initial state
     updateOverlay();
   }
