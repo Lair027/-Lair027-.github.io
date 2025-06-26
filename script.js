@@ -422,4 +422,33 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+});
+
+// --- Duel Learn video overlay logic ---
+function setupDuelLearnVideoOverlay() {
+  const duelModal = document.getElementById('modal-duel-learn');
+  if (!duelModal) return;
+  const video = duelModal.querySelector('.duel-learn-video');
+  const overlay = duelModal.querySelector('.duel-learn-play-overlay');
+  if (video && overlay) {
+    function updateOverlay() {
+      if (video.paused) {
+        overlay.style.display = '';
+      } else {
+        overlay.style.display = 'none';
+      }
+    }
+    video.addEventListener('play', updateOverlay);
+    video.addEventListener('pause', updateOverlay);
+    video.addEventListener('ended', updateOverlay);
+    // Initial state
+    updateOverlay();
+  }
+}
+
+document.addEventListener('click', function(e) {
+  // Check if Duel Learn modal is being opened
+  if (e.target.closest('.project-link[data-project="duel-learn"]')) {
+    setTimeout(setupDuelLearnVideoOverlay, 100);
+  }
 }); 
